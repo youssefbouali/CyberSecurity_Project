@@ -38,7 +38,7 @@ def is_valid_url(url):
 
 def is_private_ip(ip):
     private_patterns = [
-        r'^localhost$',          # localhost
+        r'^localhost',          # localhost
         r'^127\.',          # localhost
         r'^10\.',           # 10.0.0.0/8
         r'^172\.(1[6-9]|2[0-9]|3[0-1])\.',  # 172.16.0.0/12
