@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template
 import requests
 from functools import wraps
 from urllib.parse import urlparse
@@ -25,118 +25,6 @@ SECURITY_CONFIG = {
     'timeout': 10,
     'max_content_length': 10 * 1024 * 1024,  # 10MB
 }
-
-# HTML interface for testing secure proxy
-SECURE_HTML_INTERFACE = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Secure SSRF-Protected Proxy</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .card { background: #fff; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #27ae60; }
-        .card.danger { border-left-color: #e74c3c; }
-        .form-group { margin: 15px 0; }
-        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button.danger { background: #e74c3c; }
-        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; }
-        .security-info { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 15px 0; }
-        .warning { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin: 15px 0; }
-        .protocols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
-        .protocol-card { background: #27ae60; color: white; padding: 15px; border-radius: 8px; }
-        .protocol-card.blocked { background: #e74c3c; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🛡️ Secure SSRF-Protected Proxy</h1>
-        
-        <div class="security-info">
-            <h3>✅ Security Features Enabled:</h3>
-            <ul>
-                <li>Protocol Whitelisting (HTTP/HTTPS only)</li>
-                <li>Private IP Address Blocking</li>
-                <li>Port Restrictions</li>
-                <li>DNS Rebinding Protection</li>
-                <li>Request Timeouts & Size Limits</li>
-                <li>Comprehensive Input Validation</li>
-            </ul>
-        </div>
-
-        <div class="protocols">
-            <div class="protocol-card">
-                <h3>✅ Allowed Protocols</h3>
-                <p>HTTP and HTTPS only</p>
-                <code>https://example.com</code>
-            </div>
-            <div class="protocol-card blocked">
-                <h3>❌ Blocked Protocols</h3>
-                <p>file://, gopher://, phar://, data://, dict://</p>
-                <code>file:///etc/passwd</code>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>🔧 Test Secure Proxy</h2>
-            <form id="secureForm">
-                <div class="form-group">
-                    <label for="url">Enter URL to fetch (HTTP/HTTPS only):</label><br>
-                    <input type="text" id="url" name="url" placeholder="https://example.com" value="https://httpbin.org/json">
-                    <button type="button" onclick="testSecureProxy()">Test Secure Proxy</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>🚀 Quick Test Links</h2>
-            <div class="form-group">
-                <button onclick="testURL('https://httpbin.org/json')">Test External URL</button>
-                <button onclick="testURL('https://jsonplaceholder.typicode.com/posts/1')">Test JSON API</button>
-                <button onclick="testURL('https://google.com')">Test Google</button>
-                <button class="danger" onclick="testURL('file:///etc/passwd')">Test Blocked File Protocol</button>
-                <button class="danger" onclick="testURL('http://localhost/admin')">Test Blocked Localhost</button>
-                <button class="danger" onclick="testURL('http://169.254.169.254/')">Test Blocked Metadata</button>
-            </div>
-        </div>
-
-        <div id="results" style="display: none;">
-            <h2>📊 Results</h2>
-            <pre id="resultOutput"></pre>
-        </div>
-
-        <div class="warning">
-            <h3>🔒 Security Configuration</h3>
-            <p><strong>Allowed Domains:</strong> {{ allowed_domains }}</p>
-            <p><strong>Allowed Ports:</strong> {{ allowed_ports }}</p>
-            <p><strong>Blocked Protocols:</strong> {{ blocked_schemes }}</p>
-        </div>
-    </div>
-
-    <script>
-        function testSecureProxy() {
-            const url = document.getElementById('url').value;
-            fetch(`/get?url=${encodeURIComponent(url)}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('resultOutput').textContent = JSON.stringify(data, null, 2);
-                    document.getElementById('results').style.display = 'block';
-                })
-                .catch(error => {
-                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
-                    document.getElementById('results').style.display = 'block';
-                });
-        }
-
-        function testURL(url) {
-            document.getElementById('url').value = url;
-            testSecureProxy();
-        }
-    </script>
-</body>
-</html>
-"""
 
 class SSRFProtection:
     """Comprehensive SSRF protection class"""
@@ -393,8 +281,8 @@ def index():
     """Main interface for testing secure proxy"""
     allowed_domains_display = "Any domain (no restrictions)" if not SECURITY_CONFIG['allowed_domains'] else ', '.join(SECURITY_CONFIG['allowed_domains'])
     
-    return render_template_string(
-        SECURE_HTML_INTERFACE,
+    return render_template(
+        "secure-interface.html",
         allowed_domains=allowed_domains_display,
         allowed_ports=', '.join(map(str, sorted(SECURITY_CONFIG['allowed_ports']))),
         blocked_schemes=', '.join(SECURITY_CONFIG['blocked_schemes'])

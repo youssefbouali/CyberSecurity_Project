@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vulnerable SSRF Proxy - Dangerous Protocols</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .card.safe {
+            border-left-color: #27ae60;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button.safe {
+            background: #27ae60;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .protocols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .protocol-card {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .danger {
+            background: #e74c3c;
+        }
+
+        .warning {
+            background: #f39c12;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚨 Vulnerable SSRF Proxy</h1>
+        <p><strong>Warning:</strong> This application is intentionally vulnerable to demonstrate SSRF attacks with
+            dangerous protocols.</p>
+
+        <div class="protocols">
+            <div class="protocol-card danger">
+                <h3>📁 file:// Protocol</h3>
+                <p>Read local files from the server</p>
+                <code>file:///etc/passwd</code>
+            </div>
+            <div class="protocol-card danger">
+                <h3>📦 phar:// Protocol</h3>
+                <p>PHP archive deserialization attacks</p>
+                <code>phar:///path/to/file.phar</code>
+            </div>
+            <div class="protocol-card danger">
+                <h3>🌐 gopher:// Protocol</h3>
+                <p>Exploit internal services (Redis, SMTP)</p>
+                <code>gopher://127.0.0.1:6379</code>
+            </div>
+            <div class="protocol-card warning">
+                <h3>📄 data:// Protocol</h3>
+                <p>Data URI scheme for XSS and code injection</p>
+                <code>data:text/html,&lt;script&gt;</code>
+            </div>
+            <div class="protocol-card warning">
+                <h3>📚 dict:// Protocol</h3>
+                <p>Dictionary protocol for service enumeration</p>
+                <code>dict://127.0.0.1:11211/stats</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 Test SSRF Vulnerabilities</h2>
+            <form id="ssrfForm">
+                <div class="form-group">
+                    <label for="url">Enter URL to fetch:</label><br>
+                    <input type="text" id="url" name="url" placeholder="file:///etc/passwd" value="file:///etc/passwd">
+                    <button type="button" onclick="testSSRF()">Test SSRF</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>🚀 Quick Test Links</h2>
+            <div class="form-group">
+                <button class="danger" onclick="testProtocol('file:///etc/passwd')">Test file://</button>
+                <button class="danger" onclick="testProtocol('file:///c:/windows/system32/drivers/etc/hosts')">Test
+                    Windows file://</button>
+                <button class="danger" onclick="testProtocol('phar:///etc/passwd')">Test phar://</button>
+                <button class="danger" onclick="testProtocol('gopher://127.0.0.1:6379/_INFO')">Test gopher://
+                    Redis</button>
+                <button class="warning" onclick="testProtocol('data:text/html,<h1>SSRF Test</h1>')">Test
+                    data://</button>
+                <button class="warning" onclick="testProtocol('dict://127.0.0.1:11211/stats')">Test dict://</button>
+                <button class="safe" onclick="testProtocol('http://httpbin.org/json')">Test Safe HTTP</button>
+            </div>
+        </div>
+
+        <div id="results" style="display: none;">
+            <h2>📊 Results</h2>
+            <pre id="resultOutput"></pre>
+        </div>
+
+        <div class="card safe">
+            <h2>🛡️ Protected Endpoint (For Comparison)</h2>
+            <div class="form-group">
+                <input type="text" id="safeUrl" placeholder="https://httpbin.org/json" value="https://httpbin.org/json">
+                <button class="safe" onclick="testSafeEndpoint()">Test Protected</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testSSRF() {
+            const url = document.getElementById('url').value;
+            fetch(`/get?url=${encodeURIComponent(url)}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('resultOutput').textContent = data;
+                    document.getElementById('results').style.display = 'block';
+                })
+                .catch(error => {
+                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
+                    document.getElementById('results').style.display = 'block';
+                });
+        }
+
+        function testProtocol(url) {
+            document.getElementById('url').value = url;
+            testSSRF();
+        }
+
+        function testSafeEndpoint() {
+            const url = document.getElementById('safeUrl').value;
+            fetch(`/protected-proxy?url=${encodeURIComponent(url)}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('resultOutput').textContent = data;
+                    document.getElementById('results').style.display = 'block';
+                })
+                .catch(error => {
+                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
+                    document.getElementById('results').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+
+</html>
