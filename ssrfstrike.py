@@ -61,6 +61,102 @@ class EnhancedSSRExploiter:
             
         return sanitized
     
+    def save_vulnerability_page(self, url, response_content, description):
+        """Save vulnerable page HTML to downloads folder"""
+        try:
+            # Create safe filename
+            safe_name = self.sanitize_filename(description.replace(' ', '_').replace('/', '_').replace(':', '_'))
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"vuln_{safe_name}_{timestamp}.html"
+            filepath = os.path.join(DOWNLOADS_DIR, filename)
+            
+            # Save HTML content
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(f"<!-- Vulnerability: {description} -->\n")
+                f.write(f"<!-- URL: {url} -->\n")
+                f.write(f"<!-- Timestamp: {timestamp} -->\n\n")
+                f.write(response_content)
+            
+            self.log(f"Saved vulnerability page: {filename}", "SUCCESS")
+            return filepath
+        except Exception as e:
+            self.log(f"Error saving vulnerability page: {str(e)}", "ERROR")
+            return None
+
+    def save_text_report(self, report_data, filename_prefix="ssrf_report"):
+        """Save comprehensive text report"""
+        try:
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"{filename_prefix}_{timestamp}.txt"
+            filepath = os.path.join(DOWNLOADS_DIR, filename)
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write("=" * 80 + "\n")
+                f.write("🎯 ENHANCED SSRF EXPLOITATION REPORT\n")
+                f.write("=" * 80 + "\n\n")
+                
+                # Scan Information
+                f.write("📋 SCAN INFORMATION:\n")
+                f.write("-" * 40 + "\n")
+                f.write(f"Target URL: {report_data['scan_info']['target_url']}\n")
+                f.write(f"Scan Time: {report_data['scan_info']['scan_time']}\n")
+                f.write(f"Total Tests: {report_data['scan_info']['total_tests']}\n")
+                f.write(f"Vulnerabilities Found: {report_data['scan_info']['total_vulnerabilities']}\n")
+                f.write(f"Risk Level: {report_data['scan_info']['risk_level']}\n\n")
+                
+                # Executive Summary
+                f.write("📊 EXECUTIVE SUMMARY:\n")
+                f.write("-" * 40 + "\n")
+                f.write(f"Overall Risk: {report_data['scan_info']['risk_level']}\n")
+                f.write(f"Total Vulnerabilities: {report_data['scan_info']['total_vulnerabilities']}\n")
+                f.write(f"Success Rate: {(report_data['scan_info']['total_vulnerabilities'] / report_data['scan_info']['total_tests'] * 100):.1f}%\n\n")
+                
+                # Detailed Vulnerabilities
+                if report_data['scan_info']['total_vulnerabilities'] > 0:
+                    f.write("🚨 CRITICAL VULNERABILITIES FOUND:\n")
+                    f.write("-" * 40 + "\n")
+                    for i, vuln in enumerate(report_data['vulnerabilities'], 1):
+                        f.write(f"{i}. {vuln['description']}\n")
+                        f.write(f"   URL: {vuln['test_url']}\n")
+                        f.write(f"   Evidence: {vuln.get('evidence', 'N/A')}\n")
+                        f.write(f"   Status Code: {vuln.get('status_code', 'N/A')}\n")
+                        if vuln.get('saved_file'):
+                            f.write(f"   Saved File: {os.path.basename(vuln['saved_file'])}\n")
+                        f.write("\n")
+                
+                # Test Suite Breakdown
+                f.write("🔧 TEST SUITE BREAKDOWN:\n")
+                f.write("-" * 40 + "\n")
+                for suite in report_data['detailed_results']:
+                    f.write(f"📁 {suite['suite_name']}:\n")
+                    f.write(f"   Tests: {suite['total_tests']}\n")
+                    f.write(f"   Vulnerabilities: {suite['vulnerable_tests']}\n")
+                    f.write(f"   Success Rate: {(suite['vulnerable_tests'] / suite['total_tests'] * 100):.1f}%\n\n")
+                
+                # Security Recommendations
+                f.write("🛡️ SECURITY RECOMMENDATIONS:\n")
+                f.write("-" * 40 + "\n")
+                if report_data['scan_info']['total_vulnerabilities'] > 0:
+                    f.write("1. Implement strict URL validation and filtering\n")
+                    f.write("2. Block access to private IP addresses\n")
+                    f.write("3. Restrict allowed protocols to HTTP/HTTPS only\n")
+                    f.write("4. Implement DNS resolution validation\n")
+                    f.write("5. Add request size and timeout limits\n")
+                    f.write("6. Monitor for suspicious outbound requests\n")
+                else:
+                    f.write("✅ No immediate security issues detected.\n")
+                    f.write("Maintain current security controls and monitoring.\n")
+                
+                f.write("\n" + "=" * 80 + "\n")
+                f.write("Report generated by Enhanced SSRF Testing Tool\n")
+                f.write("=" * 80 + "\n")
+            
+            self.log(f"Saved text report: {filename}", "SUCCESS")
+            return filepath
+        except Exception as e:
+            self.log(f"Error saving text report: {str(e)}", "ERROR")
+            return None
+    
     def test_endpoint(self, test_url, description=""):
         """Test a single URL and return results"""
         try:
@@ -485,6 +581,114 @@ class EnhancedSSRExploiter:
         
         return report
     
+    def generate_report(self):
+        """Generate comprehensive test report"""
+        self.log("Generating comprehensive report...")
+        
+        total_vulnerabilities = len(self.vulnerabilities_found)
+        total_tests = sum(suite['total_tests'] for suite in self.results)
+        
+        report = {
+            'scan_info': {
+                'target_url': self.target_url,
+                'scan_time': time.strftime("%Y-%m-%d %H:%M:%S"),
+                'total_tests': total_tests,
+                'total_vulnerabilities': total_vulnerabilities,
+                'risk_level': self._calculate_risk_level(total_vulnerabilities)
+            },
+            'vulnerabilities': self.vulnerabilities_found,
+            'detailed_results': self.results
+        }
+        
+        # Print summary
+        print("\n" + "="*80)
+        print("🎯 ENHANCED SSRF EXPLOITATION REPORT")
+        print("="*80)
+        print(f"Target: {self.target_url}")
+        print(f"Total Tests: {total_tests}")
+        print(f"Vulnerabilities Found: {total_vulnerabilities}")
+        print(f"Risk Level: {report['scan_info']['risk_level']}")
+        
+        if total_vulnerabilities > 0:
+            print("\n🚨 CRITICAL VULNERABILITIES FOUND:")
+            for i, vuln in enumerate(self.vulnerabilities_found[:10]):  # Show first 10
+                print(f"  {i+1}. {vuln['description']}")
+                print(f"      URL: {vuln['test_url']}")
+                print(f"      Evidence: {vuln.get('evidence', 'N/A')}")
+                if vuln.get('saved_file'):
+                    print(f"      Saved: {os.path.basename(vuln['saved_file'])}")
+                print()
+            
+            if total_vulnerabilities > 10:
+                print(f"  ... and {total_vulnerabilities - 10} more vulnerabilities")
+        
+        # Save text report
+        text_report_path = self.save_text_report(report)
+        if text_report_path:
+            print(f"📄 Full text report saved to: {text_report_path}")
+        
+        # Save JSON report to file
+        if self.output_file:
+            with open(self.output_file, 'w', encoding='utf-8') as f:
+                json.dump(report, f, indent=2, ensure_ascii=False)
+            self.log(f"Full JSON report saved to: {self.output_file}")
+        
+        return report
+    
+    def _calculate_risk_level(self, vulnerability_count):
+        """Calculate overall risk level"""
+        if vulnerability_count == 0:
+            return "LOW"
+        elif vulnerability_count <= 3:
+            return "MEDIUM"
+        elif vulnerability_count <= 10:
+            return "HIGH"
+        else:
+            return "CRITICAL"
+
+def run_cli_mode():
+    """Run the tool in CLI mode"""
+    parser = argparse.ArgumentParser(description='Enhanced SSRF Exploitation & Security Validation Tool')
+    parser.add_argument('target', help='Target URL (e.g., http://localhost:5000/vulnerable-proxy)')
+    parser.add_argument('-o', '--output', help='Output file for results')
+    parser.add_argument('--suite', 
+                       choices=['all', 'encoding', 'internal', 'cloud', 'protocols', 'bypass'],
+                       default='all', help='Test suite to run')
+    
+    args = parser.parse_args()
+    
+    exploiter = EnhancedSSRExploiter(args.target, args.output)
+    
+    try:
+        if args.suite == 'all':
+            report = exploiter.run_all_tests()
+        else:
+            # Run specific suite
+            if args.suite == 'encoding':
+                exploiter.ip_encoding_attacks()
+            elif args.suite == 'internal':
+                exploiter.internal_service_enumeration()
+            elif args.suite == 'cloud':
+                exploiter.cloud_metadata_access()
+            elif args.suite == 'protocols':
+                exploiter.protocol_based_attacks()
+            elif args.suite == 'bypass':
+                exploiter.bypass_techniques()
+            
+            report = exploiter.generate_report()
+        
+        # Exit code based on findings
+        if report['scan_info']['total_vulnerabilities'] > 0:
+            sys.exit(1)  # Vulnerabilities found
+        else:
+            sys.exit(0)  # No vulnerabilities found
+            
+    except KeyboardInterrupt:
+        exploiter.log("Scan interrupted by user", "WARNING")
+        sys.exit(130)
+    except Exception as e:
+        exploiter.log(f"Unexpected error: {str(e)}", "ERROR")
+        sys.exit(1)
 
 # Enhanced HTML interface for testing
 ENHANCED_HTML_INTERFACE = """
