@@ -1,0 +1,11 @@
+<!-- Vulnerability: Dangerous_protocol_phar__etc_passwd -->
+<!-- URL: phar:///etc/passwd -->
+<!-- Timestamp: 20251031_011946 -->
+
+{
+  "note": "In PHP environments, this could lead to remote code execution",
+  "protocol": "phar",
+  "url": "phar:///etc/passwd",
+  "vulnerability": "HIGH - PHAR deserialization via SSRF",
+  "warning": "PHAR protocol accessed - potential deserialization vulnerability"
+}

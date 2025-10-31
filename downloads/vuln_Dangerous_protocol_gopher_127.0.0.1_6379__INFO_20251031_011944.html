@@ -1,0 +1,17 @@
+<!-- Vulnerability: Dangerous_protocol_gopher_127.0.0.1_6379__INFO -->
+<!-- URL: gopher://127.0.0.1:6379/_INFO -->
+<!-- Timestamp: 20251031_011944 -->
+
+{
+  "common_attacks": [
+    "Redis command injection",
+    "SMTP command injection",
+    "Internal service enumeration"
+  ],
+  "host": "127.0.0.1",
+  "path": "/_INFO",
+  "port": 6379,
+  "protocol": "gopher",
+  "vulnerability": "CRITICAL - Internal service access via Gopher",
+  "warning": "Gopher protocol accessed - internal service exploitation possible"
+}

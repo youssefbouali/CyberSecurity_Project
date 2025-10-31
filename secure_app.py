@@ -5,7 +5,8 @@ from urllib.parse import urlparse
 import ipaddress
 import re
 import logging
-from typing import Tuple, Optional
+import socket
+from typing import Tuple, Optional, List
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,132 +20,50 @@ SECURITY_CONFIG = {
     'blocked_schemes': {'file', 'gopher', 'phar', 'data', 'dict', 'ftp', 'sftp', 'ldap', 'tftp'},
     'allowed_ports': {80, 443, 8080, 8443},
     'blocked_ports': {22, 25, 135, 139, 445, 1433, 1521, 3306, 3389, 5432, 6379, 27017},
-    # تم تعليق allowed_domains للسماح بأي نطاق (مع الحماية الأخرى)
-    'allowed_domains': None,  # None يعني لا توجد قيود على النطاقات
+    'allowed_domains': None,
     'max_redirects': 2,
     'timeout': 10,
     'max_content_length': 10 * 1024 * 1024,  # 10MB
+    'dns_resolution_check': True,  # Enable DNS resolution for domain validation
 }
 
-# HTML interface for testing secure proxy
-SECURE_HTML_INTERFACE = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Secure SSRF-Protected Proxy</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .card { background: #fff; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #27ae60; }
-        .card.danger { border-left-color: #e74c3c; }
-        .form-group { margin: 15px 0; }
-        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button.danger { background: #e74c3c; }
-        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; }
-        .security-info { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 15px 0; }
-        .warning { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin: 15px 0; }
-        .protocols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
-        .protocol-card { background: #27ae60; color: white; padding: 15px; border-radius: 8px; }
-        .protocol-card.blocked { background: #e74c3c; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🛡️ Secure SSRF-Protected Proxy</h1>
-        
-        <div class="security-info">
-            <h3>✅ Security Features Enabled:</h3>
-            <ul>
-                <li>Protocol Whitelisting (HTTP/HTTPS only)</li>
-                <li>Private IP Address Blocking</li>
-                <li>Port Restrictions</li>
-                <li>DNS Rebinding Protection</li>
-                <li>Request Timeouts & Size Limits</li>
-                <li>Comprehensive Input Validation</li>
-            </ul>
-        </div>
 
-        <div class="protocols">
-            <div class="protocol-card">
-                <h3>✅ Allowed Protocols</h3>
-                <p>HTTP and HTTPS only</p>
-                <code>https://example.com</code>
-            </div>
-            <div class="protocol-card blocked">
-                <h3>❌ Blocked Protocols</h3>
-                <p>file://, gopher://, phar://, data://, dict://</p>
-                <code>file:///etc/passwd</code>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>🔧 Test Secure Proxy</h2>
-            <form id="secureForm">
-                <div class="form-group">
-                    <label for="url">Enter URL to fetch (HTTP/HTTPS only):</label><br>
-                    <input type="text" id="url" name="url" placeholder="https://example.com" value="https://httpbin.org/json">
-                    <button type="button" onclick="testSecureProxy()">Test Secure Proxy</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>🚀 Quick Test Links</h2>
-            <div class="form-group">
-                <button onclick="testURL('https://httpbin.org/json')">Test External URL</button>
-                <button onclick="testURL('https://jsonplaceholder.typicode.com/posts/1')">Test JSON API</button>
-                <button onclick="testURL('https://google.com')">Test Google</button>
-                <button class="danger" onclick="testURL('file:///etc/passwd')">Test Blocked File Protocol</button>
-                <button class="danger" onclick="testURL('http://localhost/admin')">Test Blocked Localhost</button>
-                <button class="danger" onclick="testURL('http://169.254.169.254/')">Test Blocked Metadata</button>
-            </div>
-        </div>
-
-        <div id="results" style="display: none;">
-            <h2>📊 Results</h2>
-            <pre id="resultOutput"></pre>
-        </div>
-
-        <div class="warning">
-            <h3>🔒 Security Configuration</h3>
-            <p><strong>Allowed Domains:</strong> {{ allowed_domains }}</p>
-            <p><strong>Allowed Ports:</strong> {{ allowed_ports }}</p>
-            <p><strong>Blocked Protocols:</strong> {{ blocked_schemes }}</p>
-        </div>
-    </div>
-
-    <script>
-        function testSecureProxy() {
-            const url = document.getElementById('url').value;
-            fetch(`/get?url=${encodeURIComponent(url)}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('resultOutput').textContent = JSON.stringify(data, null, 2);
-                    document.getElementById('results').style.display = 'block';
-                })
-                .catch(error => {
-                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
-                    document.getElementById('results').style.display = 'block';
-                });
-        }
-
-        function testURL(url) {
-            document.getElementById('url').value = url;
-            testSecureProxy();
-        }
-    </script>
-</body>
-</html>
-"""
-
-class SSRFProtection:
-    """Comprehensive SSRF protection class"""
+class EnhancedSSRFProtection:
+    """Enhanced SSRF protection with IP encoding detection and DNS validation"""
     
+    # Services that provide domain bypassing
+    BYPASS_SERVICES = {
+        'nip.io',
+        'sslip.io',
+        'localdomain.local',
+        'localtest.me',
+        'lvh.me',
+        'vcap.me',
+        'xip.io',
+        'somerandom.io',
+    }
+    
+    # Private IP ranges (CIDR notation)
+    PRIVATE_IPV4_RANGES = [
+        '10.0.0.0/8',
+        '172.16.0.0/12', 
+        '192.168.0.0/16',
+        '127.0.0.0/8',
+        '169.254.0.0/16',
+        '0.0.0.0/8'
+    ]
+    
+    PRIVATE_IPV6_RANGES = [
+        '::1/128',
+        'fc00::/7',
+        'fe80::/10',
+        '::ffff:0:0/96'
+    ]
+
     @staticmethod
     def validate_url(url: str) -> Tuple[bool, Optional[str]]:
         """
-        Comprehensive URL validation to prevent SSRF attacks
+        Comprehensive URL validation with enhanced SSRF protection
         Returns (is_valid, error_message)
         """
         try:
@@ -161,25 +80,28 @@ class SSRFProtection:
             if not parsed.hostname:
                 return False, "Invalid hostname"
             
-            # 3. Private IP address detection
-            if SSRFProtection._is_private_ip(parsed.hostname):
-                return False, "Access to private IP addresses is blocked"
+            # 3. Enhanced IP address detection and validation
+            ip_check_result = EnhancedSSRFProtection._check_ip_security(parsed.hostname)
+            if not ip_check_result[0]:
+                return ip_check_result
             
-            # 4. Localhost detection
-            if SSRFProtection._is_localhost(parsed.hostname):
-                return False, "Access to localhost is blocked"
+            # 4. Domain bypass service detection
+            if EnhancedSSRFProtection._is_bypass_service(parsed.hostname):
+                return False, f"Domain bypass service detected: {parsed.hostname}"
             
-            # 5. Port validation
-            if parsed.port and not SSRFProtection._is_allowed_port(parsed.port):
+            # 5. DNS resolution check (if enabled)
+            if SECURITY_CONFIG['dns_resolution_check']:
+                dns_result = EnhancedSSRFProtection._check_dns_resolution(parsed.hostname)
+                if not dns_result[0]:
+                    return dns_result
+            
+            # 6. Port validation
+            if parsed.port and not EnhancedSSRFProtection._is_allowed_port(parsed.port):
                 return False, f"Access to port {parsed.port} is not allowed"
             
-            # 6. Domain allow list (if configured)
-            if SECURITY_CONFIG['allowed_domains'] and not SSRFProtection._is_allowed_domain(parsed.hostname):
+            # 7. Domain allow list (if configured)
+            if SECURITY_CONFIG['allowed_domains'] and not EnhancedSSRFProtection._is_allowed_domain(parsed.hostname):
                 return False, f"Domain '{parsed.hostname}' is not in the allow list"
-            
-            # 7. DNS rebinding protection
-            if SSRFProtection._has_dns_rebinding_attempt(parsed.hostname):
-                return False, "Potential DNS rebinding attempt detected"
             
             # 8. URL length validation
             if len(url) > 2000:
@@ -193,120 +115,206 @@ class SSRFProtection:
             return False, f"URL validation error: {str(e)}"
     
     @staticmethod
-    def _is_private_ip(host: str) -> bool:
-        """Check if host is a private IP address"""
-        try:
-            # Handle different IP formats
-            ip = SSRFProtection._normalize_ip(host)
-            if not ip:
-                return False
-            
-            ip_obj = ipaddress.ip_address(ip)
-            
-            # Check for private ranges
-            if ip_obj.is_private:
-                return True
-            
-            # Check for loopback
-            if ip_obj.is_loopback:
-                return True
-            
-            # Check for link-local
-            if ip_obj.is_link_local:
-                return True
-            
-            # Check for multicast
-            if ip_obj.is_multicast:
-                return True
-            
-            # Check for reserved
-            if ip_obj.is_reserved:
-                return True
-            
-            return False
-            
-        except ValueError:
-            # If it's not a valid IP, it might be a hostname
-            return False
-    
-    @staticmethod
-    def _normalize_ip(host: str) -> Optional[str]:
-        """Normalize IP address from various formats"""
-        try:
-            # Handle octal encoding (0177.0.0.1 -> 127.0.0.1)
-            if host.replace('.', '').isdigit():
-                try:
-                    # Check if it's an octal encoded IP
-                    parts = host.split('.')
-                    if len(parts) == 4:
-                        decimal_parts = [int(part, 0) for part in parts]  # 0 = auto-detect base
-                        normalized = '.'.join(str(part) for part in decimal_parts)
-                        ipaddress.ip_address(normalized)
-                        return normalized
-                except:
-                    pass
-            
-            # Handle decimal encoding (2130706433 -> 127.0.0.1)
-            if host.isdigit():
-                try:
-                    ip_int = int(host)
-                    if 0 <= ip_int <= 0xFFFFFFFF:
-                        # Convert to IP address
-                        ip = ipaddress.IPv4Address(ip_int)
-                        return str(ip)
-                except:
-                    pass
-            
-            # Handle hexadecimal (0x7f000001 -> 127.0.0.1)
-            if host.startswith('0x'):
-                try:
-                    ip_int = int(host, 16)
-                    if 0 <= ip_int <= 0xFFFFFFFF:
-                        ip = ipaddress.IPv4Address(ip_int)
-                        return str(ip)
-                except:
-                    pass
-            
-            # Regular IP address
-            ipaddress.ip_address(host)
-            return host
-            
-        except ValueError:
-            return None
-    
-    @staticmethod
-    def _is_localhost(host: str) -> bool:
-        """Check if hostname resolves to localhost"""
-        localhost_indicators = {
-            'localhost',
-            'local',
-            '127.0.0.1',
-            '::1',
-            '0.0.0.0',
-            '0000::0',
-            'localhost.localdomain',
-            'localtest.me',
-            'lvh.me',
-            '127.0.0.1.nip.io',
-            '0x7f.0x0.0x0.0x1',
-        }
+    def _check_ip_security(host: str) -> Tuple[bool, Optional[str]]:
+        """Comprehensive IP security check with encoding detection"""
         
-        # Check exact matches
-        if host.lower() in localhost_indicators:
-            return True
+        # Try to detect and normalize encoded IP addresses
+        normalized_ip = EnhancedSSRFProtection._normalize_encoded_ip(host)
         
-        # Check subdomains of localhost
-        if host.lower().endswith('.localhost'):
-            return True
+        if normalized_ip:
+            # Check if normalized IP is private
+            if EnhancedSSRFProtection._is_private_ip(normalized_ip):
+                return False, f"Encoded private IP address detected: {host} -> {normalized_ip}"
         
-        # Check for IPv4 and IPv6 variations
+        # Check if it's a direct IP address
         try:
-            ip = ipaddress.ip_address(host)
-            return ip.is_loopback
+            ip_obj = ipaddress.ip_address(host)
+            if EnhancedSSRFProtection._is_private_ip(str(ip_obj)):
+                return False, f"Private IP address blocked: {host}"
+            return True, None
         except ValueError:
             pass
         
+        # Check for IP in domain (like 127.0.0.1.nip.io)
+        ip_from_domain = EnhancedSSRFProtection._extract_ip_from_domain(host)
+        if ip_from_domain:
+            if EnhancedSSRFProtection._is_private_ip(ip_from_domain):
+                return False, f"Private IP in domain detected: {host} -> {ip_from_domain}"
+        
+        return True, None
+    
+    @staticmethod
+    def _normalize_encoded_ip(host: str) -> Optional[str]:
+        """
+        Detect and normalize various IP encodings:
+        - Hexadecimal: 0x7f.0.0.1, 0x7f000001
+        - Decimal: 2130706433
+        - Octal: 0177.0.0.1, 0377.0377.0377.0377
+        - Mixed encodings
+        """
+        
+        # Handle dotted hexadecimal (0x7f.0x0.0x0.0x1)
+        if '0x' in host and '.' in host:
+            try:
+                parts = host.split('.')
+                if len(parts) == 4:
+                    decimal_parts = []
+                    for part in parts:
+                        if part.startswith('0x'):
+                            decimal_parts.append(str(int(part, 16)))
+                        else:
+                            decimal_parts.append(part)
+                    normalized = '.'.join(decimal_parts)
+                    ipaddress.ip_address(normalized)
+                    return normalized
+            except:
+                pass
+        
+        # Handle dotted octal (0177.0.0.1)
+        if host.replace('.', '').replace('0', '').isdigit():
+            try:
+                parts = host.split('.')
+                if len(parts) == 4:
+                    decimal_parts = [int(part, 0) for part in parts]  # 0 = auto-detect base
+                    normalized = '.'.join(str(part) for part in decimal_parts)
+                    ipaddress.ip_address(normalized)
+                    return normalized
+            except:
+                pass
+        
+        # Handle single decimal (2130706433)
+        if host.isdigit():
+            try:
+                ip_int = int(host)
+                if 0 <= ip_int <= 0xFFFFFFFF:
+                    ip = ipaddress.IPv4Address(ip_int)
+                    return str(ip)
+            except:
+                pass
+        
+        # Handle single hexadecimal (0x7f000001)
+        if host.startswith('0x'):
+            try:
+                ip_int = int(host, 16)
+                if 0 <= ip_int <= 0xFFFFFFFF:
+                    ip = ipaddress.IPv4Address(ip_int)
+                    return str(ip)
+            except:
+                pass
+        
+        # Handle IPv6 encoded formats
+        try:
+            # Remove brackets for IPv6
+            clean_host = host.strip('[]')
+            ipaddress.IPv6Address(clean_host)
+            return clean_host
+        except:
+            pass
+        
+        return None
+    
+    @staticmethod
+    def _extract_ip_from_domain(host: str) -> Optional[str]:
+        """Extract IP address from domains like 127.0.0.1.nip.io"""
+        
+        # Common patterns for IP in domain
+        ip_patterns = [
+            r'^(\d+\.\d+\.\d+\.\d+)\.',  # IPv4 at start
+            r'\.(\d+\.\d+\.\d+\.\d+)$',  # IPv4 at end
+            r'^([0-9a-f:]+)\.',          # IPv6 at start
+            r'\.([0-9a-f:]+)$',          # IPv6 at end
+        ]
+        
+        for pattern in ip_patterns:
+            match = re.search(pattern, host, re.IGNORECASE)
+            if match:
+                ip_candidate = match.group(1)
+                try:
+                    # Validate it's a real IP
+                    ipaddress.ip_address(ip_candidate)
+                    return ip_candidate
+                except ValueError:
+                    continue
+        
+        return None
+    
+    @staticmethod
+    def _is_bypass_service(host: str) -> bool:
+        """Check if domain uses bypass services like nip.io"""
+        host_lower = host.lower()
+        
+        for service in EnhancedSSRFProtection.BYPASS_SERVICES:
+            if host_lower.endswith('.' + service):
+                return True
+        
+        # Check for patterns like 127-0-0-1.nip.io
+        for service in EnhancedSSRFProtection.BYPASS_SERVICES:
+            if service in host_lower:
+                # Check if it contains IP-like patterns
+                ip_patterns = [
+                    r'\d+-\d+-\d+-\d+',  # 127-0-0-1
+                    r'\d+\.\d+\.\d+\.\d+',  # 127.0.0.1
+                    r'0x[0-9a-f]+',  # Hexadecimal
+                ]
+                
+                for pattern in ip_patterns:
+                    if re.search(pattern, host_lower):
+                        return True
+        
         return False
+    
+    @staticmethod
+    def _check_dns_resolution(host: str) -> Tuple[bool, Optional[str]]:
+        """Check DNS resolution for private IP detection"""
+        try:
+            # Resolve hostname to IP addresses
+            ips = socket.getaddrinfo(host, None)
+            resolved_ips = []
+            
+            for family, _, _, _, sockaddr in ips:
+                if family == socket.AF_INET:  # IPv4
+                    ip = sockaddr[0]
+                    resolved_ips.append(ip)
+                elif family == socket.AF_INET6:  # IPv6
+                    ip = sockaddr[0]
+                    resolved_ips.append(ip)
+            
+            # Check all resolved IPs
+            for ip in resolved_ips:
+                if EnhancedSSRFProtection._is_private_ip(ip):
+                    return False, f"DNS resolution reveals private IP: {host} -> {ip}"
+            
+            return True, None
+            
+        except socket.gaierror:
+            # DNS resolution failed - be conservative
+            return False, f"DNS resolution failed for: {host}"
+        except Exception as e:
+            logger.warning(f"DNS check error for {host}: {str(e)}")
+            return False, f"DNS check failed: {str(e)}"
+    
+    @staticmethod
+    def _is_private_ip(ip_str: str) -> bool:
+        """Check if IP is in private ranges"""
+        try:
+            ip = ipaddress.ip_address(ip_str)
+            
+            # Check IPv4 private ranges
+            if ip.version == 4:
+                for range_cidr in EnhancedSSRFProtection.PRIVATE_IPV4_RANGES:
+                    if ip in ipaddress.IPv4Network(range_cidr, strict=False):
+                        return True
+            
+            # Check IPv6 private ranges
+            if ip.version == 6:
+                for range_cidr in EnhancedSSRFProtection.PRIVATE_IPV6_RANGES:
+                    if ip in ipaddress.IPv6Network(range_cidr, strict=False):
+                        return True
+            
+            return False
+            
+        except ValueError:
+            return False
     
     @staticmethod
     def _is_allowed_port(port: int) -> bool:
@@ -316,48 +324,26 @@ class SSRFProtection:
     @staticmethod
     def _is_allowed_domain(domain: str) -> bool:
         """Check if domain is in allow list"""
-        # إذا كانت allowed_domains هي None أو فارغة، اسمح بجميع النطاقات
         if not SECURITY_CONFIG['allowed_domains']:
-            return True  # لا توجد قيود على النطاقات
-        
+            return True
         return domain in SECURITY_CONFIG['allowed_domains']
-    
-    @staticmethod
-    def _has_dns_rebinding_attempt(host: str) -> bool:
-        """Detect potential DNS rebinding attempts"""
-        suspicious_patterns = [
-            r'.*@.*',                    # Userinfo in host
-            r'.*\.localhost.*',          # Localhost subdomains
-            r'.*\.internal.*',           # Internal domains
-            r'.*\.local.*',              # Local domains
-            r'.*\.example.*',            # Example domains
-            r'^[0-9a-fA-F:]+$',          # Raw IPv6 without brackets
-        ]
-        
-        for pattern in suspicious_patterns:
-            if re.match(pattern, host, re.IGNORECASE):
-                return True
-        
-        return False
 
 def ssrf_protected(f):
     """
-    Decorator for SSRF-protected endpoints
+    Decorator for SSRF-protected endpoints using enhanced protection
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Get URL from request - support multiple content types
         url = None
         
         # Try to get URL from different sources
         if request.args.get('url'):
-            url = request.args.get('url')  # GET parameters
+            url = request.args.get('url')
         elif request.form and request.form.get('url'):
-            url = request.form.get('url')  # POST form data
+            url = request.form.get('url')
         elif request.json and request.json.get('url'):
-            url = request.json.get('url')  # JSON data
+            url = request.json.get('url')
         elif request.get_data():
-            # Try to parse raw data
             try:
                 raw_data = request.get_data(as_text=True)
                 if 'url=' in raw_data:
@@ -375,50 +361,35 @@ def ssrf_protected(f):
                 'usage': 'Use ?url= parameter in GET or send URL in POST data'
             }), 400
         
-        # Validate URL
-        is_valid, error_message = SSRFProtection.validate_url(url)
+        # Validate URL with enhanced protection
+        is_valid, error_message = EnhancedSSRFProtection.validate_url(url)
         if not is_valid:
             logger.warning(f"🚨 SSRF attempt blocked: {url} - {error_message}")
             return jsonify({
                 'error': error_message,
                 'status': 'blocked',
-                'security': 'SSRF protection activated'
+                'security': 'Enhanced SSRF protection activated'
             }), 403
         
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/')
-def index():
-    """Main interface for testing secure proxy"""
-    allowed_domains_display = "Any domain (no restrictions)" if not SECURITY_CONFIG['allowed_domains'] else ', '.join(SECURITY_CONFIG['allowed_domains'])
-    
-    return render_template_string(
-        SECURE_HTML_INTERFACE,
-        allowed_domains=allowed_domains_display,
-        allowed_ports=', '.join(map(str, sorted(SECURITY_CONFIG['allowed_ports']))),
-        blocked_schemes=', '.join(SECURITY_CONFIG['blocked_schemes'])
-    )
-
 @app.route('/get')
 @ssrf_protected
 def secure_proxy():
     """
-    ✅ SECURE: SSRF-protected proxy endpoint
-    Only allows validated HTTP/HTTPS URLs
+    ✅ SECURE: Enhanced SSRF-protected proxy endpoint
     """
     url = request.args.get('url')
     
     try:
-        # Make the request with security constraints
         response = requests.get(
             url,
             timeout=SECURITY_CONFIG['timeout'],
-            allow_redirects=True,  # تم التعديل هنا
-            verify=True  # SSL verification
+            allow_redirects=True,
+            verify=True
         )
         
-        # Check content length
         content_length = len(response.content)
         if content_length > SECURITY_CONFIG['max_content_length']:
             return jsonify({
@@ -426,7 +397,6 @@ def secure_proxy():
                 'max_allowed': SECURITY_CONFIG['max_content_length']
             }), 413
         
-        # Return safe response
         return jsonify({
             'status': 'success',
             'url': url,
@@ -434,7 +404,7 @@ def secure_proxy():
             'content_type': response.headers.get('content-type'),
             'content_length': content_length,
             'content_preview': response.text[:1000] + '...' if len(response.text) > 1000 else response.text,
-            'security': 'SSRF protection enabled'
+            'security': 'Enhanced SSRF protection enabled'
         })
         
     except requests.exceptions.Timeout:
@@ -464,7 +434,7 @@ def secure_proxy():
 
 @app.route('/security-test')
 def security_test():
-    """Endpoint to test various SSRF protection scenarios"""
+    """Endpoint to test enhanced SSRF protection scenarios"""
     test_cases = [
         {
             'name': 'Allowed HTTPS URL',
@@ -482,25 +452,50 @@ def security_test():
             'expected': 'blocked'
         },
         {
-            'name': 'Blocked Private IP',
-            'url': 'http://192.168.1.1',
+            'name': 'Blocked Hexadecimal IP',
+            'url': 'http://0x7f.0.0.1/',
+            'expected': 'blocked'
+        },
+        {
+            'name': 'Blocked Decimal IP',
+            'url': 'http://2130706433/',
+            'expected': 'blocked'
+        },
+        {
+            'name': 'Blocked Octal IP',
+            'url': 'http://0177.0.0.1/',
+            'expected': 'blocked'
+        },
+        {
+            'name': 'Blocked NIP.IO Service',
+            'url': 'http://127.0.0.1.nip.io/',
+            'expected': 'blocked'
+        },
+        {
+            'name': 'Blocked Mixed Encoding',
+            'url': 'http://0x7f.0.0.0x1/',
+            'expected': 'blocked'
+        },
+        {
+            'name': 'Blocked IPv6 Localhost',
+            'url': 'http://[::1]/',
+            'expected': 'blocked'
+        },
+        {
+            'name': 'Blocked Private IPv4',
+            'url': 'http://192.168.1.1/',
             'expected': 'blocked'
         },
         {
             'name': 'Blocked Metadata Service',
-            'url': 'http://169.254.169.254',
-            'expected': 'blocked'
-        },
-        {
-            'name': 'Blocked Gopher Protocol',
-            'url': 'gopher://127.0.0.1:6379',
+            'url': 'http://169.254.169.254/',
             'expected': 'blocked'
         },
     ]
     
     results = []
     for test in test_cases:
-        is_valid, error = SSRFProtection.validate_url(test['url'])
+        is_valid, error = EnhancedSSRFProtection.validate_url(test['url'])
         result = {
             'test_name': test['name'],
             'url': test['url'],
@@ -512,7 +507,7 @@ def security_test():
         results.append(result)
     
     return jsonify({
-        'security_test': 'SSRF Protection Validation',
+        'security_test': 'Enhanced SSRF Protection Validation',
         'results': results,
         'summary': {
             'total_tests': len(results),
@@ -523,41 +518,60 @@ def security_test():
 
 @app.route('/validate-url')
 def validate_url_endpoint():
-    """Endpoint to validate URLs without making requests"""
+    """Enhanced URL validation endpoint"""
     url = request.args.get('url')
     
     if not url:
         return jsonify({'error': 'URL parameter is required'}), 400
     
-    is_valid, error_message = SSRFProtection.validate_url(url)
+    is_valid, error_message = EnhancedSSRFProtection.validate_url(url)
+    
+    # Get detailed security analysis
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    
+    security_analysis = {
+        'scheme_validation': parsed.scheme in SECURITY_CONFIG['allowed_schemes'] if parsed.scheme else False,
+        'ip_encoding_detected': EnhancedSSRFProtection._normalize_encoded_ip(hostname) if hostname else False,
+        'bypass_service_detected': EnhancedSSRFProtection._is_bypass_service(hostname) if hostname else False,
+        'private_ip_detected': False,
+        'dns_resolution_checked': False
+    }
+    
+    if hostname:
+        normalized_ip = EnhancedSSRFProtection._normalize_encoded_ip(hostname)
+        if normalized_ip:
+            security_analysis['private_ip_detected'] = EnhancedSSRFProtection._is_private_ip(normalized_ip)
+        else:
+            security_analysis['private_ip_detected'] = EnhancedSSRFProtection._is_private_ip(hostname)
+        
+        if SECURITY_CONFIG['dns_resolution_check']:
+            dns_valid, _ = EnhancedSSRFProtection._check_dns_resolution(hostname)
+            security_analysis['dns_resolution_checked'] = dns_valid
     
     return jsonify({
         'url': url,
         'is_valid': is_valid,
         'error_message': error_message,
-        'security_checks': {
-            'scheme_validation': SSRFProtection.validate_url(url)[0] if is_valid else False,
-            'private_ip_blocked': SSRFProtection._is_private_ip(urlparse(url).hostname) if urlparse(url).hostname else False,
-            'localhost_blocked': SSRFProtection._is_localhost(urlparse(url).hostname) if urlparse(url).hostname else False
-        }
+        'security_analysis': security_analysis
     })
 
 if __name__ == '__main__':
-    print("🛡️ Starting SECURE SSRF-Protected Application...")
+    print("🛡️ Starting ENHANCED SECURE SSRF-Protected Application...")
     print("✅ Protected endpoints:")
     print("   - /get?url=https://example.com")
-    print("   - /security-test (SSRF protection tests)")
-    print("   - /validate-url?url=... (URL validation)")
+    print("   - /security-test (Enhanced SSRF protection tests)")
+    print("   - /validate-url?url=... (Enhanced URL validation)")
     print()
-    print("🔒 Security Features:")
+    print("🔒 Enhanced Security Features:")
+    print("   - Hexadecimal/Decimal/Octal IP encoding detection")
+    print("   - NIP.IO and domain bypass service blocking")
+    print("   - DNS resolution validation")
+    print("   - IPv4/IPv6 private range blocking")
     print("   - Protocol whitelisting (HTTP/HTTPS only)")
-    print("   - Private IP blocking (RFC 1918, loopback, etc.)")
     print("   - Port restrictions")
-    print("   - DNS rebinding protection")
-    print("   - Request size/timeout limits")
-    print("   - No domain restrictions (all domains allowed)")
     print()
-    print("🌐 Access the secure interface at: http://localhost:5000")
+    print("🌐 Access the enhanced secure interface at: http://localhost:5000")
     print()
     
     app.run(host='0.0.0.0', port=5000, debug=False)
