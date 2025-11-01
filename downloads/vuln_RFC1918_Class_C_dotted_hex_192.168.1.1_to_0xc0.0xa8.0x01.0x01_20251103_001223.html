@@ -1,0 +1,348 @@
+<!-- Vulnerability: RFC1918_Class_C_dotted_hex_192.168.1.1_to_0xc0.0xa8.0x01.0x01 -->
+<!-- URL: http://0xc0.0xa8.0x01.0x01/ -->
+<!-- Timestamp: 20251103_001223 -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Internal Admin Dashboard - CRITICAL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .critical-banner {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: blink 2s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #ff4444;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            color: #666;
+            font-size: 1.2em;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ff4444;
+        }
+        .card.critical {
+            border-left-color: #ff4444;
+            background: #fff5f5;
+        }
+        .card.warning {
+            border-left-color: #ffaa00;
+            background: #fffbf0;
+        }
+        .card.info {
+            border-left-color: #007bff;
+            background: #f0f8ff;
+        }
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .info-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        .info-item.critical {
+            background: #ffe6e6;
+            border-left-color: #ff4444;
+            font-weight: bold;
+        }
+        .info-item.warning {
+            background: #fff3cd;
+            border-left-color: #ffaa00;
+        }
+        .secret-data {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .system-status {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .status-item {
+            text-align: center;
+            padding: 15px;
+        }
+        .status-item .indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+        }
+        .status-online { background: #28a745; }
+        .status-offline { background: #dc3545; }
+        .status-warning { background: #ffc107; }
+        .api-section {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .api-endpoint {
+            background: #2c3e50;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="critical-banner">
+            ⚠️ CRITICAL INTERNAL SYSTEM - RESTRICTED ACCESS ⚠️
+        </div>
+        
+        <div class="dashboard">
+            <div class="header">
+                <h1>🔐 Internal Admin Dashboard</h1>
+                <div class="subtitle">Sensitive System Information - FOR INTERNAL USE ONLY</div>
+            </div>
+
+            <div class="system-status">
+                <div class="status-item">
+                    <div class="indicator status-online"></div>
+                    <div>Database</div>
+                    <strong>ONLINE</strong>
+                </div>
+                <div class="status-item">
+                    <div class="indicator status-online"></div>
+                    <div>API Server</div>
+                    <strong>ONLINE</strong>
+                </div>
+                <div class="status-item">
+                    <div class="indicator status-warning"></div>
+                    <div>Firewall</div>
+                    <strong>WARNING</strong>
+                </div>
+            </div>
+
+            <div class="grid">
+                <!-- System Information Card -->
+                <div class="card critical">
+                    <h3>🚨 System Credentials</h3>
+                    <div class="info-item critical">
+                        <strong>Admin Username:</strong> root_admin
+                    </div>
+                    <div class="info-item critical">
+                        <strong>Default Password:</strong> P@ssw0rd123!
+                    </div>
+                    <div class="info-item critical">
+                        <strong>SSH Key:</strong> ssh-rsa AAAAB3NzaC1yc2E... admin@internal
+                    </div>
+                    <div class="info-item warning">
+                        <strong>Last Login:</strong> 2024-01-15 14:30:22 from 192.168.1.100
+                    </div>
+                </div>
+
+                <!-- Database Information Card -->
+                <div class="card critical">
+                    <h3>🗄️ Database Access</h3>
+                    <div class="info-item critical">
+                        <strong>DB Host:</strong> 127.0.0.1:5432
+                    </div>
+                    <div class="info-item critical">
+                        <strong>DB Name:</strong> company_secrets
+                    </div>
+                    <div class="info-item critical">
+                        <strong>DB User:</strong> postgres_admin
+                    </div>
+                    <div class="info-item critical">
+                        <strong>DB Password:</strong> db_secret_2024!
+                    </div>
+                </div>
+
+                <!-- Network Configuration Card -->
+                <div class="card warning">
+                    <h3>🌐 Network Configuration</h3>
+                    <div class="info-item">
+                        <strong>Internal IP:</strong> 192.168.1.1
+                    </div>
+                    <div class="info-item">
+                        <strong>Subnet Mask:</strong> 255.255.255.0
+                    </div>
+                    <div class="info-item">
+                        <strong>Gateway:</strong> 192.168.1.254
+                    </div>
+                    <div class="info-item warning">
+                        <strong>VPN Config:</strong> vpn_internal.ovpn
+                    </div>
+                </div>
+
+                <!-- API Keys Card -->
+                <div class="card critical">
+                    <h3>🔑 API Access Keys</h3>
+                    <div class="info-item critical">
+                        <strong>AWS Access Key:</strong> AKIAIOSFODNN7EXAMPLE
+                    </div>
+                    <div class="info-item critical">
+                        <strong>AWS Secret Key:</strong> wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+                    </div>
+                    <div class="info-item critical">
+                        <strong>Stripe API Key:</strong> sk_test_4eC39HqLyjWDarjtT1zdp7dc
+                    </div>
+                    <div class="info-item critical">
+                        <strong>JWT Secret:</strong> super_secret_jwt_key_2024!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secret Data Section -->
+            <div class="card critical">
+                <h3>📁 Confidential Data Files</h3>
+                <div class="secret-data">
+                    /etc/passwd contents:<br>
+                    root:x:0:0:root:/root:/bin/bash<br>
+                    admin:x:1000:1000:Admin User:/home/admin:/bin/bash<br>
+                    postgres:x:101:101:PostgreSQL:/var/lib/postgresql:/bin/bash
+                </div>
+                <div class="secret-data">
+                    /etc/shadow excerpt:<br>
+                    root:$6$rounds=656000$H1lDprmB$...:19455:0:99999:7:::<br>
+                    admin:$6$rounds=656000$abc123def$...:19455:0:99999:7:::
+                </div>
+            </div>
+
+            <!-- Environment Variables -->
+            <div class="card critical">
+                <h3>⚙️ Environment Configuration</h3>
+                <div class="secret-data">
+                    DATABASE_URL=postgresql://admin:secret@192.168.1.1:5432/production<br>
+                    REDIS_URL=redis://192.168.1.1:6379/0<br>
+                    SECRET_KEY=this_is_very_secret_key_2024!<br>
+                    AWS_BUCKET=company-private-files<br>
+                    SMTP_PASSWORD=email_password_123!
+                </div>
+            </div>
+
+            <!-- API Endpoints -->
+            <div class="api-section">
+                <h3>🔌 Internal API Endpoints</h3>
+                <div class="api-endpoint">
+                    GET /api/v1/users/credentials - Get all user credentials
+                </div>
+                <div class="api-endpoint">
+                    POST /api/v1/admin/execute - Execute system commands
+                </div>
+                <div class="api-endpoint">
+                    GET /api/v1/database/backup - Download database backup
+                </div>
+                <div class="api-endpoint">
+                    POST /api/v1/firewall/disable - Disable firewall rules
+                </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+                <h3>💾 Download Critical Information</h3>
+                <p>This information should be protected and never exposed publicly!</p>
+                <a href="/download/critical" class="btn btn-danger">📥 Download Full Report</a>
+                <a href="/download/config" class="btn">⚙️ Download Config Files</a>
+                <a href="/download/backup" class="btn">🗄️ Download Database Backup</a>
+            </div>
+
+            <div class="footer">
+                <p>⚠️ <strong>SECURITY WARNING:</strong> This page contains sensitive internal information.</p>
+                <p>Access should be restricted to authorized personnel only.</p>
+                <p>Last updated: 2024-01-15 14:35:00 UTC</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

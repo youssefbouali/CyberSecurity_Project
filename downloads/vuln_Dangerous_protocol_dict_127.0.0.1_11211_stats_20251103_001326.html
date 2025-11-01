@@ -1,0 +1,17 @@
+<!-- Vulnerability: Dangerous_protocol_dict_127.0.0.1_11211_stats -->
+<!-- URL: dict://127.0.0.1:11211/stats -->
+<!-- Timestamp: 20251103_001326 -->
+
+{
+  "common_targets": [
+    "Redis (port 6379)",
+    "Memcached (port 11211)",
+    "Database services"
+  ],
+  "host": "127.0.0.1",
+  "path": "/stats",
+  "port": 11211,
+  "protocol": "dict",
+  "vulnerability": "MEDIUM - Service enumeration via Dict protocol",
+  "warning": "Dict protocol accessed - internal service enumeration possible"
+}
