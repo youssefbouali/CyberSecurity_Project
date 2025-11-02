@@ -695,7 +695,7 @@ ENHANCED_HTML_INTERFACE = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enhanced SSRF Testing Interface</title>
+    <title>SSRFStrike - Advanced SSRF Exploitation & Security Validation Suite - Enhanced SSRF Testing Interface</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
         .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -730,7 +730,7 @@ ENHANCED_HTML_INTERFACE = """
 </head>
 <body>
     <div class="container">
-        <h1>🛡️ Enhanced SSRF Testing Interface</h1>
+        <h1>🕵️‍♂️ SSRFStrike - Advanced SSRF Exploitation & Security Validation Suite - 🛡️ Enhanced SSRF Testing Interface</h1>
         
         <div class="security-info">
             <h3>🔍 Testing Capabilities:</h3>
@@ -1029,23 +1029,17 @@ def run_all_tests():
 def main():
     """Main function with mode selection"""
     parser = argparse.ArgumentParser(description='Enhanced SSRF Exploitation & Security Validation Tool')
-    parser.add_argument('--mode', choices=['cli', 'web'], default='web', 
-                       help='Run in CLI mode or start web interface (default: web)')
-    parser.add_argument('target', nargs='?', help='Target URL for CLI mode (e.g., http://localhost:5000)')
-    parser.add_argument('-o', '--output', help='Output file for results (CLI mode only)')
+    parser.add_argument('target', nargs='?', help='Target URL (e.g., http://localhost:5000/vulnerable-proxy)')
+    parser.add_argument('-o', '--output', help='Output file for results')
     parser.add_argument('--suite', 
                        choices=['all', 'encoding', 'internal', 'cloud', 'protocols', 'bypass'],
-                       default='all', help='Test suite to run (CLI mode only)')
+                       default='all', help='Test suite to run')
+    parser.add_argument('--mode', choices=['cli', 'web'], default='cli',
+                       help='Run in CLI mode or start web interface (default: cli)')
     
     args = parser.parse_args()
     
-    if args.mode == 'cli':
-        if not args.target:
-            print("Error: Target URL is required for CLI mode")
-            print("Usage: python script.py --mode cli <target_url>")
-            sys.exit(1)
-        run_cli_mode()
-    else:
+    if args.mode == 'web' or not args.target:
         # Web interface mode
         print("🌐 Starting Enhanced SSRF Testing Web Interface...")
         print("📁 Vulnerability pages will be saved to: downloads/")
@@ -1053,6 +1047,42 @@ def main():
         print("🔗 Access the interface at: http://localhost:8080")
         print("🎯 Use the 'RUN ALL TESTS' button for comprehensive testing")
         app.run(host='0.0.0.0', port=8080, debug=False)
+    else:
+        # CLI mode
+        exploiter = EnhancedSSRExploiter(args.target, args.output)
+        
+        try:
+            if args.suite == 'all':
+                report = exploiter.run_all_tests()
+            else:
+                # Run specific suite
+                if args.suite == 'encoding':
+                    exploiter.ip_encoding_attacks()
+                elif args.suite == 'internal':
+                    exploiter.internal_service_enumeration()
+                elif args.suite == 'cloud':
+                    exploiter.cloud_metadata_access()
+                elif args.suite == 'protocols':
+                    exploiter.protocol_based_attacks()
+                elif args.suite == 'bypass':
+                    exploiter.bypass_techniques()
+                
+                report = exploiter.generate_report()
+            
+            # Exit code based on findings
+            if report['scan_info']['total_vulnerabilities'] > 0:
+                sys.exit(1)  # Vulnerabilities found
+            else:
+                sys.exit(0)  # No vulnerabilities found
+                
+        except KeyboardInterrupt:
+            exploiter.log("Scan interrupted by user", "WARNING")
+            sys.exit(130)
+        except Exception as e:
+            exploiter.log(f"Unexpected error: {str(e)}", "ERROR")
+            sys.exit(1)
+
+# Remove the run_cli_mode() function entirely
 
 if __name__ == '__main__':
     main()

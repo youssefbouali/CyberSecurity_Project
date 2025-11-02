@@ -14,127 +14,223 @@ HTML_INTERFACE = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vulnerable SSRF Proxy - Dangerous Protocols</title>
+    <title>URL Fetcher</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .card { background: #fff; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #e74c3c; }
-        .card.safe { border-left-color: #27ae60; }
-        .form-group { margin: 15px 0; }
-        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button.safe { background: #27ae60; }
-        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; }
-        .protocols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
-        .protocol-card { background: #34495e; color: white; padding: 15px; border-radius: 8px; }
-        .danger { background: #e74c3c; }
-        .warning { background: #f39c12; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .examples {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        .examples h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .example-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .example-link {
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .example-link:hover {
+            background: #e3f2fd;
+            color: #2980b9;
+        }
+        .results {
+            margin-top: 25px;
+            display: none;
+        }
+        .results h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.4;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚨 Vulnerable SSRF Proxy</h1>
-        <p><strong>Warning:</strong> This application is intentionally vulnerable to demonstrate SSRF attacks with dangerous protocols.</p>
-        
-        <div class="protocols">
-            <div class="protocol-card danger">
-                <h3>📁 file:// Protocol</h3>
-                <p>Read local files from the server</p>
-                <code>file:///etc/passwd</code>
-            </div>
-            <div class="protocol-card danger">
-                <h3>📦 phar:// Protocol</h3>
-                <p>PHP archive deserialization attacks</p>
-                <code>phar:///path/to/file.phar</code>
-            </div>
-            <div class="protocol-card danger">
-                <h3>🌐 gopher:// Protocol</h3>
-                <p>Exploit internal services (Redis, SMTP)</p>
-                <code>gopher://127.0.0.1:6379</code>
-            </div>
-            <div class="protocol-card warning">
-                <h3>📄 data:// Protocol</h3>
-                <p>Data URI scheme for XSS and code injection</p>
-                <code>data:text/html,&lt;script&gt;</code>
-            </div>
-            <div class="protocol-card warning">
-                <h3>📚 dict:// Protocol</h3>
-                <p>Dictionary protocol for service enumeration</p>
-                <code>dict://127.0.0.1:11211/stats</code>
-            </div>
+        <div class="header">
+            <h1>🌐 URL Fetcher</h1>
+            <p>Enter any URL to fetch its content</p>
         </div>
 
-        <div class="card">
-            <h2>🔧 Test SSRF Vulnerabilities</h2>
-            <form id="ssrfForm">
-                <div class="form-group">
-                    <label for="url">Enter URL to fetch:</label><br>
-                    <input type="text" id="url" name="url" placeholder="file:///etc/passwd" value="file:///etc/passwd">
-                    <button type="button" onclick="testSSRF()">Test SSRF</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>🚀 Quick Test Links</h2>
+        <form id="urlForm" action="/get" method="get">
             <div class="form-group">
-                <button class="danger" onclick="testProtocol('file:///etc/passwd')">Test file://</button>
-                <button class="danger" onclick="testProtocol('file:///c:/windows/system32/drivers/etc/hosts')">Test Windows file://</button>
-                <button class="danger" onclick="testProtocol('phar:///etc/passwd')">Test phar://</button>
-                <button class="danger" onclick="testProtocol('gopher://127.0.0.1:6379/_INFO')">Test gopher:// Redis</button>
-                <button class="warning" onclick="testProtocol('data:text/html,<h1>SSRF Test</h1>')">Test data://</button>
-                <button class="warning" onclick="testProtocol('dict://127.0.0.1:11211/stats')">Test dict://</button>
-                <button class="safe" onclick="testProtocol('http://httpbin.org/json')">Test Safe HTTP</button>
+                <input type="text" 
+                       id="url" 
+                       name="url" 
+                       placeholder="Enter URL (e.g., file:///myfolder/myfile.txt, http://example.com)" 
+                       required>
+            </div>
+            <button type="submit">Fetch URL Content</button>
+        </form>
+
+        <div class="examples">
+            <h3>Quick Examples:</h3>
+            <div class="example-links">
+                <a href="#" class="example-link" onclick="setUrl('file:///myfolder/myfile.txt')">📁 Local File: file:///myfolder/myfile.txt</a>
+                <a href="#" class="example-link" onclick="setUrl('http://httpbin.org/json')">🌐 HTTP API: http://httpbin.org/json</a>
+                <a href="#" class="example-link" onclick="setUrl('gopher://example.com:6379/_INFO')">📦 Gopher: gopher://example.com:6379</a>
+                <a href="#" class="example-link" onclick="setUrl('data:text/html,<h1>Test</h1>')">📄 Data URI: data:text/html</a>
+                <a href="#" class="example-link" onclick="setUrl('phar:///test.phar')">📦 Phar: phar:///test.phar</a>
             </div>
         </div>
 
-        <div id="results" style="display: none;">
-            <h2>📊 Results</h2>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Fetching URL content...</p>
+        </div>
+
+        <div class="results" id="results">
+            <h3>Results:</h3>
             <pre id="resultOutput"></pre>
-        </div>
-
-        <div class="card safe">
-            <h2>🛡️ Protected Endpoint (For Comparison)</h2>
-            <div class="form-group">
-                <input type="text" id="safeUrl" placeholder="https://httpbin.org/json" value="https://httpbin.org/json">
-                <button class="safe" onclick="testSafeEndpoint()">Test Protected</button>
-            </div>
         </div>
     </div>
 
     <script>
-        function testSSRF() {
-            const url = document.getElementById('url').value;
-            fetch(`/get?url=${encodeURIComponent(url)}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('resultOutput').textContent = data;
-                    document.getElementById('results').style.display = 'block';
-                })
-                .catch(error => {
-                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
-                    document.getElementById('results').style.display = 'block';
-                });
-        }
-
-        function testProtocol(url) {
+        function setUrl(url) {
             document.getElementById('url').value = url;
-            testSSRF();
         }
 
-        function testSafeEndpoint() {
-            const url = document.getElementById('safeUrl').value;
-            fetch(`/protected-proxy?url=${encodeURIComponent(url)}`)
-                .then(response => response.text())
+        document.getElementById('urlForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const url = document.getElementById('url').value;
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const resultOutput = document.getElementById('resultOutput');
+            
+            // Show loading
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            
+            // Fetch the URL
+            fetch(`/get?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
                 .then(data => {
-                    document.getElementById('resultOutput').textContent = data;
-                    document.getElementById('results').style.display = 'block';
+                    resultOutput.textContent = data;
+                    results.style.display = 'block';
                 })
                 .catch(error => {
-                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
-                    document.getElementById('results').style.display = 'block';
+                    resultOutput.textContent = 'Error: ' + error.message;
+                    results.style.display = 'block';
+                })
+                .finally(() => {
+                    loading.style.display = 'none';
                 });
-        }
+        });
+
+        // Focus on input when page loads
+        document.getElementById('url').focus();
     </script>
 </body>
 </html>
@@ -156,7 +252,7 @@ def vulnerable_proxy():
     if not url:
         return jsonify({'error': 'URL parameter is required'}), 400
     
-    print(f"🚨 VULNERABLE PROXY ACCESSED: {url}")
+    print(f"🚨 ACCESSED: {url}")
     
     try:
         # 🚨 CRITICAL VULNERABILITY: No protocol validation!
@@ -217,14 +313,14 @@ def handle_file_protocol(url):
             'protocol': 'file',
             'file_path': file_path,
             'content': content,
-            'vulnerability': 'CRITICAL - Local file read via SSRF'
+            #'vulnerability': 'CRITICAL - Local file read via SSRF'
         })
         
     except Exception as e:
         return jsonify({
             'error': f'File access failed: {str(e)}',
             'url': url,
-            'vulnerability': 'File protocol SSRF attempted'
+            #'vulnerability': 'File protocol SSRF attempted'
         }), 500
 
 def handle_phar_protocol(url):
@@ -237,7 +333,7 @@ def handle_phar_protocol(url):
             'protocol': 'phar',
             'url': url,
             'warning': 'PHAR protocol accessed - potential deserialization vulnerability',
-            'vulnerability': 'HIGH - PHAR deserialization via SSRF',
+            #'vulnerability': 'HIGH - PHAR deserialization via SSRF',
             'note': 'In PHP environments, this could lead to remote code execution'
         })
         
@@ -245,7 +341,7 @@ def handle_phar_protocol(url):
         return jsonify({
             'error': f'PHAR access failed: {str(e)}',
             'url': url,
-            'vulnerability': 'PHAR protocol SSRF attempted'
+            #'vulnerability': 'PHAR protocol SSRF attempted'
         }), 500
 
 def handle_gopher_protocol(url):
@@ -263,7 +359,7 @@ def handle_gopher_protocol(url):
             'port': port,
             'path': path,
             'warning': 'Gopher protocol accessed - internal service exploitation possible',
-            'vulnerability': 'CRITICAL - Internal service access via Gopher',
+            #'vulnerability': 'CRITICAL - Internal service access via Gopher',
             'common_attacks': [
                 'Redis command injection',
                 'SMTP command injection',
@@ -275,7 +371,7 @@ def handle_gopher_protocol(url):
         return jsonify({
             'error': f'Gopher access failed: {str(e)}',
             'url': url,
-            'vulnerability': 'Gopher protocol SSRF attempted'
+            #'vulnerability': 'Gopher protocol SSRF attempted'
         }), 500
 
 def handle_data_protocol(url):
@@ -286,7 +382,7 @@ def handle_data_protocol(url):
             'protocol': 'data',
             'url': url,
             'warning': 'Data URI scheme accessed - potential XSS/code injection',
-            'vulnerability': 'MEDIUM - Data URI injection via SSRF',
+            #'vulnerability': 'MEDIUM - Data URI injection via SSRF',
             'risks': [
                 'Cross-site scripting (XSS)',
                 'HTML injection',
@@ -298,7 +394,7 @@ def handle_data_protocol(url):
         return jsonify({
             'error': f'Data URI access failed: {str(e)}',
             'url': url,
-            'vulnerability': 'Data protocol SSRF attempted'
+            #'vulnerability': 'Data protocol SSRF attempted'
         }), 500
 
 def handle_dict_protocol(url):
@@ -328,7 +424,7 @@ def handle_dict_protocol(url):
         return jsonify({
             'error': f'Dict access failed: {str(e)}',
             'url': url,
-            'vulnerability': 'Dict protocol SSRF attempted'
+            #'vulnerability': 'Dict protocol SSRF attempted'
         }), 500
 
 @app.route('/protected-proxy')
