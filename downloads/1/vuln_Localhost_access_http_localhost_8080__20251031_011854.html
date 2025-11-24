@@ -1,0 +1,237 @@
+<!-- Vulnerability: Localhost_access_http_localhost_8080_ -->
+<!-- URL: http://localhost:8080/ -->
+<!-- Timestamp: 20251031_011854 -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enhanced SSRF Testing Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .card { background: #fff; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #27ae60; }
+        .card.danger { border-left-color: #e74c3c; }
+        .card.warning { border-left-color: #f39c12; }
+        .card.primary { border-left-color: #3498db; }
+        .form-group { margin: 15px 0; }
+        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-large { padding: 15px 30px; font-size: 18px; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .security-info { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .warning { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .encoding-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
+        .encoding-card { background: #3498db; color: white; padding: 15px; border-radius: 8px; }
+        .encoding-card.blocked { background: #e74c3c; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .vulnerability { background: #f8d7da; color: #721c24; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        .downloads-list { max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; }
+        .progress-bar { width: 100%; background: #f0f0f0; border-radius: 10px; margin: 10px 0; }
+        .progress { height: 20px; background: #27ae60; border-radius: 10px; width: 0%; transition: width 0.3s; }
+        .status-running { color: #f39c12; font-weight: bold; }
+        .status-completed { color: #27ae60; font-weight: bold; }
+        .status-error { color: #e74c3c; font-weight: bold; }
+        .report-section { background: #e8f4fd; padding: 15px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Enhanced SSRF Testing Interface</h1>
+        
+        <div class="security-info">
+            <h3>🔍 Testing Capabilities:</h3>
+            <ul>
+                <li>Hexadecimal IP Encoding (0x7f.0.0.1, 0x7f000001)</li>
+                <li>Decimal IP Encoding (2130706433)</li>
+                <li>Octal IP Encoding (0177.0.0.1)</li>
+                <li>Mixed Encoding Attacks</li>
+                <li>Private IPv4/IPv6 Range Testing</li>
+                <li>Automatic Vulnerability Page Download</li>
+                <li>Comprehensive Text Reports</li>
+            </ul>
+        </div>
+
+        <div class="card primary">
+            <h2>🚀 COMPREHENSIVE TESTING</h2>
+            <div class="form-group">
+                <label for="targetUrl">Target URL to test:</label><br>
+                <input type="text" id="targetUrl" name="targetUrl" placeholder="http://vulnerable-app.com/proxy" style="width: 80%;" value="http://localhost:5000/get">
+                <button class="btn-primary btn-large" onclick="runAllTests()">🎯 RUN ALL TESTS</button>
+            </div>
+            <div id="progressSection" style="display: none;">
+                <h4 id="statusText" class="status-running">Running comprehensive tests...</h4>
+                <div class="progress-bar">
+                    <div class="progress" id="testProgress"></div>
+                </div>
+                <div id="testDetails"></div>
+            </div>
+        </div>
+
+        <div class="encoding-grid">
+            <div class="encoding-card">
+                <h3>🔢 Decimal Encoding</h3>
+                <p>127.0.0.1 → 2130706433</p>
+                <code>http://2130706433/</code>
+            </div>
+            <div class="encoding-card">
+                <h3>🔡 Hexadecimal Encoding</h3>
+                <p>127.0.0.1 → 0x7f.0.0.1</p>
+                <code>http://0x7f.0.0.1/</code>
+            </div>
+            <div class="encoding-card">
+                <h3>🔢 Octal Encoding</h3>
+                <p>127.0.0.1 → 0177.0.0.1</p>
+                <code>http://0177.0.0.1/</code>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Manual SSRF Test</h2>
+            <form id="testForm">
+                <div class="form-group">
+                    <label for="url">Enter URL to test:</label><br>
+                    <input type="text" id="url" name="url" placeholder="http://0x7f.0.0.1/admin" style="width: 80%;">
+                    <button type="button" class="btn-success" onclick="testSSRF()">Test SSRF</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card warning">
+            <h2>⚡ Quick Encoding Tests</h2>
+            <div class="form-group">
+                <button class="btn-danger" onclick="testURL('http://0x7f.0.0.1/')">Hex Localhost</button>
+                <button class="btn-danger" onclick="testURL('http://2130706433/')">Decimal Localhost</button>
+                <button class="btn-danger" onclick="testURL('http://0177.0.0.1/')">Octal Localhost</button>
+                <button class="btn-danger" onclick="testURL('http://0xa9fea9fe/')">Hex AWS Metadata</button>
+                <button class="btn-danger" onclick="testURL('http://2852039166/')">Decimal AWS Metadata</button>
+                <button class="btn-danger" onclick="testURL('http://0xc0a80101/')">Hex Router IP</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 Individual Test Suites</h2>
+            <div class="form-group">
+                <button class="btn-warning" onclick="runTestSuite('encoding')">Run IP Encoding Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('internal')">Run Internal Service Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('cloud')">Run Cloud Metadata Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('protocols')">Run Protocol Tests</button>
+                <button class="btn-warning" onclick="runTestSuite('bypass')">Run Bypass Tests</button>
+            </div>
+        </div>
+
+        <div id="results" style="display: none;">
+            <h2>📊 Test Results</h2>
+            <div id="reportSection" class="report-section" style="display: none;">
+                <h3>📄 Generated Reports</h3>
+                <div id="reportLinks"></div>
+            </div>
+            <pre id="resultOutput"></pre>
+        </div>
+
+        <div class="card">
+            <h2>💾 Downloaded Files</h2>
+            <div class="downloads-list" id="downloadsList">
+                
+                <div class="vulnerability">
+                    <strong>vuln_RFC1918_Class_C_dotted_hex_192.168.1.1_to_0xc0.0xa8.0x01.0x01_20251031_011802.html</strong><br>
+                    <small>Saved: 2025-10-31 01:18:02</small><br>
+                    <a href="/download/vuln_RFC1918_Class_C_dotted_hex_192.168.1.1_to_0xc0.0xa8.0x01.0x01_20251031_011802.html" target="_blank">Download</a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function runAllTests() {
+            const targetUrl = document.getElementById('targetUrl').value;
+            if (!targetUrl) {
+                alert('Please enter a target URL');
+                return;
+            }
+
+            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('statusText').className = 'status-running';
+            document.getElementById('statusText').textContent = 'Running comprehensive tests...';
+            document.getElementById('testProgress').style.width = '0%';
+            document.getElementById('testDetails').innerHTML = '';
+
+            fetch(`/run-all-tests?target=${encodeURIComponent(targetUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('testProgress').style.width = '100%';
+                    
+                    if (data.success) {
+                        document.getElementById('statusText').className = 'status-completed';
+                        document.getElementById('statusText').textContent = `✅ Testing Completed! Found ${data.vulnerabilities_found} vulnerabilities`;
+                        document.getElementById('resultOutput').textContent = JSON.stringify(data.report, null, 2);
+                        document.getElementById('results').style.display = 'block';
+                        
+                        // Show report links
+                        if (data.text_report_path) {
+                            document.getElementById('reportSection').style.display = 'block';
+                            document.getElementById('reportLinks').innerHTML = `
+                                <p><strong>📄 Text Report:</strong> <a href="/download/${data.text_report_filename}" target="_blank">${data.text_report_filename}</a></p>
+                            `;
+                        }
+                        
+                        // Refresh downloads list
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        document.getElementById('statusText').className = 'status-error';
+                        document.getElementById('statusText').textContent = '❌ Testing Failed: ' + (data.error || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('statusText').className = 'status-error';
+                    document.getElementById('statusText').textContent = '❌ Testing Error: ' + error;
+                });
+        }
+
+        function testSSRF() {
+            const url = document.getElementById('url').value;
+            const targetUrl = document.getElementById('targetUrl').value;
+            fetch(`/test-ssrf?url=${encodeURIComponent(url)}&target=${encodeURIComponent(targetUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultOutput').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('results').style.display = 'block';
+                    if(data.vulnerable) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
+                    document.getElementById('results').style.display = 'block';
+                });
+        }
+
+        function testURL(url) {
+            document.getElementById('url').value = url;
+            testSSRF();
+        }
+
+        function runTestSuite(suite) {
+            const targetUrl = document.getElementById('targetUrl').value;
+            fetch(`/run-tests?suite=${suite}&target=${encodeURIComponent(targetUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultOutput').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('results').style.display = 'block';
+                    if(data.vulnerabilities_found > 0) {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultOutput').textContent = 'Error: ' + error;
+                    document.getElementById('results').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>

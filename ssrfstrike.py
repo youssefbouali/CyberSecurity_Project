@@ -29,8 +29,11 @@ class EnhancedSSRExploiter:
         self.output_file = output_file
         self.results = []
         self.vulnerabilities_found = []
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> bc58a37bfc955844cc9b312695eba38c3ff4d780
         
         # Request session with common headers
         self.session = requests.Session()
@@ -40,11 +43,14 @@ class EnhancedSSRExploiter:
             'Connection': 'close'
         })
         
+<<<<<<< HEAD
         self.session.proxies = {
             "http":  "socks5h://127.0.0.1:9150",
             "https": "socks5h://127.0.0.1:9150"
         }
         
+=======
+>>>>>>> bc58a37bfc955844cc9b312695eba38c3ff4d780
     def log(self, message, level="INFO"):
         """Log messages with timestamps"""
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
